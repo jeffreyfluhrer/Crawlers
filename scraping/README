@@ -7,3 +7,5 @@ a list of north american resorts.
 
 This code will create a csv file of resort names with their locations
 and prices.
+
+Removed the resorts from Canada out of the list

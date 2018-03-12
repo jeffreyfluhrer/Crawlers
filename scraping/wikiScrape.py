@@ -21,7 +21,7 @@ def scrape(html):
     fields = ('resortName', 'city', 'state', 'price')
     writer.writerow(fields)
     for i in range(len(resort)):
-        if(state[i] != "Quebec"):
+        if(state[i] != "Quebec" and state[i] != "British Columbia"):
             writer.writerow([resort[i], city[i], state[i], price[i]])    
 
 if __name__ == '__main__':
