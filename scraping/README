@@ -1,0 +1,9 @@
+Notes on progress for web scraping portion of project:
+
+3/12/2018
+----------------
+Created initial python code for scraping a wiki page that contains
+a list of north american resorts.  
+
+This code will create a csv file of resort names with their locations
+and prices.
