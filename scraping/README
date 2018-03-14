@@ -9,3 +9,9 @@ This code will create a csv file of resort names with their locations
 and prices.
 
 Removed the resorts from Canada out of the list
+
+3/14/2018
+----------------
+Created a python script that is able to crawl through the skiresortsinfo page
+
+TODO: Need to add a scraper for it to extract all the data from each subordinate webpage
