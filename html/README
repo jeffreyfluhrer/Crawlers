@@ -1,0 +1,13 @@
+Adding five new files that will perform all the basic CRUD functionality for the project (I hope).
+
+Here are the things that need to be performed for these to work:
+
+1. Modify the username, password and database name to correspond to the values of the system in question for all four php files.
+
+2.  Create a database and users for the system in question.
+
+TODO:
+
+1.  Modularize the code to make function calls as much of the code can be reduced significantly.
+
+2.  Make the appearance pretty at all.
