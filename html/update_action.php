@@ -68,8 +68,8 @@ The entered city is: <?php echo $_GET["city"]; ?> -->
 
 <?php
 $servername = "localhost";
-$username = "****";
-$password = "******";
+$username = "root";
+$password = "22Gonz0*@";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password);
@@ -80,7 +80,7 @@ if ($conn->connect_error) {
 }
 //echo "<br>Connected successfully";
 
-$sql = "USE *****";
+$sql = "USE cs411";
 
 if ($conn->query($sql) === TRUE) {
     //echo "<br>Database selected";

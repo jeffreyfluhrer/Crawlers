@@ -92,98 +92,21 @@
 The entered city is: <?php echo $_GET["city"]; ?> -->
 
 <?php
-$servername = "localhost";
-$username = "****";
-$password = "********";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password);
+include 'Connect.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-//echo "<br>Connected successfully";
+$conn = ConnectDatabase();
 
-$sql = "USE *****";
+$conn = ChooseDatabase($conn);
 
-if ($conn->query($sql) === TRUE) {
-    //echo "<br>Database selected";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
+$sql = FormSelectResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["liftPrice"]);
 
-$sql = "SELECT * FROM Resort";
+echo "<br>" . $sql . "<br>";
 
-$where = "";
-
-// Form the WHERE clause here
-if (strlen($_GET["resortName"]) != 0) {
-  $where = $where . "Name = \"" . $_GET["resortName"] . "\" ";
-}
-
-if (strlen($_GET["city"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . "AND ";
-  }
-  $where = $where . "City = \"" . $_GET["city"] . "\" ";
-}
-
-if (strlen($_GET["state"]) != 0) {
-  if(strlen($where != 0)) {
-    $where = $where . " AND ";
-  }
-  $where = $where . "State = \"" . $_GET["state"] . "\" ";
-}
-
-if (strlen($_GET["liftPrice"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . " AND ";
-  }
-  $where = $where . "LiftPrice < \"" . $_GET["liftPrice"] . "\" ";
-}
-
-if(strlen($where) != 0) {
-  $sql = $sql . " WHERE " . $where;
-}
-
-//echo "<br>" . $sql . "<br>";
-
-$result = $conn->query($sql);
-if ($result->num_rows > 0) {
-    // Skeleton for the form
-
-    echo "<table style=\"width:40%\">";
-    echo "<tr>";
-    echo "<th>Name:</th>";
-    echo "<th>City:</th>";
-    echo "<th>State:</th>";
-    echo "<th>Lift Price:</th>";
-    echo "<th>Delete:</th>";
-//    echo "<th>Update:</th>";
-    echo "</tr>";
-    // output data of each row
-    while($row = $result->fetch_assoc()) {
-      echo "<form action=\"/update_delete_page.php\">";
-      echo "<tr>";
-      echo "<td> <input type=\"text\" name=\"resortName\" value=\"" . $row["Name"] . "\"></td>";
-      echo "<td> <input type=\"text\" name=\"city\" value=\"" . $row["City"] . "\"></td>";
-      echo "<td> <input type=\"text\" name=\"state\" value=\"" . $row["State"] . "\"></td>";
-      echo "<td> <input type=\"text\" name=\"liftPrice\" value=\"" . $row["LiftPrice"] . "\"></td>";
-      echo "<td> <input type=\"submit\" value=\"Delete\"></td>";
-//      echo "<td> <input type=\"submit\" value=\"Update\"></td>";
-      echo "</tr>";
-      echo "</form>";  
-    }
-    echo "</table>";
-
-} else {
-    echo "Sorry, no results found";
-}
-
-//echo "ResortName: " . $row["Name"]. " - City: " . $row["City"]. " State " . $row["State"] . " Price " . $row["LiftPrice"] . "<br>";
+PerformQuery($conn, $sql);
 
 $conn->close();
+
 ?> 
 
 <!-- <button class="btn btn-success" onclick="$(this).hide();"> Click me!</button> -->

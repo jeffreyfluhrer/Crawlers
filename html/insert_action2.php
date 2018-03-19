@@ -38,38 +38,19 @@
 <!-- The entered resort is: <?php echo $_GET["resortName"]; ?><br>
 The entered city is: <?php echo $_GET["city"]; ?> -->
 
+
 <?php
-$servername = "localhost";
-$username = "*****";
-$password = "*******";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password);
+include 'Connect.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-//echo "<br>Connected successfully";
+$conn = ConnectDatabase();
 
-$sql = "USE ****";
+$conn = ChooseDatabase($conn);
 
-if ($conn->query($sql) === TRUE) {
-    //echo "<br>Database selected";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
+$returnMsg = InsertValue($conn, $_GET["resortName"], $_GET["city"],  $_GET["state"], $_GET["liftPrice"]);
 
-$sql = "INSERT INTO Resort (Name, City, State, LiftPrice)
-VALUES ('" . $_GET["resortName"] . "', '" . $_GET["city"] . "', '" . $_GET["state"] . "'," . $_GET["liftPrice"] . ")";
+echo "<br>" . $returnMsg;
 
-//echo "<br>" . $sql;
-
-if ($conn->query($sql) === TRUE) {
-    echo "<br>New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
 ?> 
 
 <br>

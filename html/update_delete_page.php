@@ -92,70 +92,22 @@ The entered city is: <?php echo $_GET["city"]; ?> -->
 <h2> Search Results are as follows: </h2>
 
 <?php
-$servername = "localhost";
-$username = "*****";
-$password = "*******";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password);
+include 'Connect.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-echo "<br>Connected successfully";
+$conn = ConnectDatabase();
 
-$sql = "USE ******";
+$conn = ChooseDatabase($conn);
 
-if ($conn->query($sql) === TRUE) {
-    echo "<br>Database selected";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
-$where = "";
-
-// Form the WHERE clause here
-if (strlen($_GET["resortName"]) != 0) {
-  $where = $where . "Name = \"" . $_GET["resortName"] . "\" ";
-}
-
-if (strlen($_GET["city"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . "AND ";
-   }
-  $where = $where . "City = \"" . $_GET["city"] . "\" ";
-}
-
-if (strlen($_GET["state"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . "AND ";
-  }
-  $where = $where . "State = \"" . $_GET["state"] . "\" ";
-}
-
-if (strlen($_GET["liftPrice"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . " AND ";
-  }
-  $where = $where . "LiftPrice = \"" . $_GET["liftPrice"] . "\" ";
-}
-
-
-$sql = "DELETE FROM Resort WHERE " . $where;
-
+$sql = FormDeleteResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["liftPrice"]);
 
 echo "<br>" . $sql;
 
-//if(strlen($where) != 0) {
-  if ($conn->query($sql) === TRUE) {
-      echo "<br>record(s) successfully deleted";
-  } else {
-      echo "Error: " . $sql . "<br>" . $conn->error;
-  }
-//else {
-//  echo "<br>Please specify delete conditions";
-//  }
-//}
+if ($conn->query($sql) === TRUE) {
+    echo "<br>record(s) successfully deleted";
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
 
 ?> 
 
