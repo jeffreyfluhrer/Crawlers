@@ -1,7 +1,7 @@
 <?php
 
 function ConnectDatabase() {
-
+  
   $servername = "localhost";
   $username = "*********";
   $password = "*********";
@@ -18,29 +18,27 @@ function ConnectDatabase() {
   return $conn;
 
 }
-
+  
 function ChooseDatabase($conn) {
+  
+    $sql = "USE *******";
 
-  $sql = "USE *******";
-
- if ($conn->query($sql) === TRUE) {
+  if ($conn->query($sql) === TRUE) {
       //echo "<br>Database selected";
   } else {
       echo "Error: " . $sql . "<br>" . $conn->error;
   }
- return $conn;
+  return $conn;
 }
 
 function InsertValue($conn, $Name = "NULL", $City = "NULL", $State = "NULL", $LiftPrice= "NULL") {
 
   $sql = "INSERT INTO Resort (Name, City, State, LiftPrice) VALUES ('" . $Name . "', '" . $City . "', '" . $State . "'," . $LiftPrice . ")";
 
-  echo "<br>" . $sql;
-
   if ($conn->query($sql) === TRUE) {
-    $returnVal = "<br>New record created successfully";
+    $returnVal = "New record created successfully.";
   } else {
-    $returnVal =  "Error: " . $sql . "<br>" . $conn->error;
+    $returnVal = "Error: " . $sql . "<br>" . $conn->error;
   }
   return $returnVal;
 }
@@ -88,57 +86,57 @@ function FormUpdateResort() {
 $where = "";
 
 // Form the WHERE clause here
-if (strlen($_GET["oldResortName"]) != 0) {
-  $where = $where . "Name = \"" . $_GET["oldResortName"] . "\" ";
+if (strlen($_POST["oldResortName"]) != 0) {
+  $where = $where . "Name = \"" . $_POST["oldResortName"] . "\" ";
 }
 
-if (strlen($_GET["oldCity"]) != 0) {
+if (strlen($_POST["oldCity"]) != 0) {
   if(strlen($where) != 0) {
     $where = $where . "AND ";
    }
-  $where = $where . "City = \"" . $_GET["oldCity"] . "\" ";
+  $where = $where . "City = \"" . $_POST["oldCity"] . "\" ";
 }
 
-if (strlen($_GET["oldState"]) != 0) {
+if (strlen($_POST["oldState"]) != 0) {
   if(strlen($where) != 0) {
     $where = $where . "AND ";
   }
-  $where = $where . "State = \"" . $_GET["oldState"] . "\" ";
+  $where = $where . "State = \"" . $_POST["oldState"] . "\" ";
 }
 
-if (strlen($_GET["oldLiftPrice"]) != 0) {
+if (strlen($_POST["oldLiftPrice"]) != 0) {
   if(strlen($where) != 0) {
     $where = $where . " AND ";
   }
-  $where = $where . "LiftPrice = \"" . $_GET["oldLiftPrice"] . "\" ";
+  $where = $where . "LiftPrice = \"" . $_POST["oldLiftPrice"] . "\" ";
 }
 
 $set = "";
 
 // Form the SET clause here
-if (strlen($_GET["newResortName"]) != 0) {
-  $set = $set . "Name = \"" . $_GET["newResortName"] . "\" ";
+if (strlen($_POST["newResortName"]) != 0) {
+  $set = $set . "Name = \"" . $_POST["newResortName"] . "\" ";
 }
 
-if (strlen($_GET["newCity"]) != 0) {
+if (strlen($_POST["newCity"]) != 0) {
   if(strlen($set) != 0) {
     $set = $set . "AND ";
    }
-  $set = $set . "City = \"" . $_GET["newCity"] . "\" ";
+  $set = $set . "City = \"" . $_POST["newCity"] . "\" ";
 }
 
-if (strlen($_GET["newState"]) != 0) {
+if (strlen($_POST["newState"]) != 0) {
   if(strlen($set) != 0) {
     $set = $set . "AND ";
   }
-  $set = $set . "State = \"" . $_GET["newState"] . "\" ";
+  $set = $set . "State = \"" . $_POST["newState"] . "\" ";
 }
 
-if (strlen($_GET["newLiftPrice"]) != 0) {
+if (strlen($_POST["newLiftPrice"]) != 0) {
   if(strlen($set) != 0) {
     $set = $set . " AND ";
   }
-  $set = $set . "LiftPrice = \"" . $_GET["newLiftPrice"] . "\" ";
+  $set = $set . "LiftPrice = \"" . $_POST["newLiftPrice"] . "\" ";
 }
 
 
@@ -186,33 +184,33 @@ function FormDeleteResort($Name, $City, $State, $LiftPrice) {
 }
 
 function PerformQuery($conn, $sql) {
-  
-
-
   $result = $conn->query($sql);
   if ($result->num_rows > 0) {
       // Skeleton for the form
 
-      echo "<table style=\"width:40%\">";
+      echo "<table class=\"table\" style=\"width:40%\">";
+      echo "<thead>";
       echo "<tr>";
-      echo "<th>Name:</th>";
-      echo "<th>City:</th>";
-      echo "<th>State:</th>";
-      echo "<th>Lift Price:</th>";
-      echo "<th>Delete:</th>";
+      echo "<th scope=\"col\">Name</th>";
+      echo "<th scope=\"col\">City</th>";
+      echo "<th scope=\"col\">State</th>";
+      echo "<th scope=\"col\">Lift Price</th>";
+      echo "<th scope=\"col\">Delete?</th>";
       echo "</tr>";
+      echo "<thead>";
       // output data of each row
+      echo "<tbody>";
       while($row = $result->fetch_assoc()) {
-        echo "<form action=\"/update_delete_page.php\">";
-        echo "<tr>";
+        echo "<form method=\"post\" action=\"/search.php\">";
         echo "<td> <input type=\"text\" name=\"resortName\" value=\"" . $row["Name"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"city\" value=\"" . $row["City"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"state\" value=\"" . $row["State"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"liftPrice\" value=\"" . $row["LiftPrice"] . "\"></td>";
-        echo "<td> <input type=\"submit\" value=\"Delete\"></td>";
+        echo "<td> <input type=\"hidden\" name=\"delete\" value=\"true\"> <input type=\"submit\" value=\"Delete\"></td>";
         echo "</tr>";
-        echo "</form>";  
+        echo "</form>";
       }
+      echo "</tbody>";
       echo "</table>";
 
   } else {
