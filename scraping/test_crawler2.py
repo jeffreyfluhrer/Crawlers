@@ -64,9 +64,15 @@ def test_crawler(seed_url, link_class=None, delay=5, max_depth=-1, max_urls=-1, 
                             
             # TODO:  Make this a depth == 1 case where all the subpages are scraped
             elif depth == 1:
+                # download the weather report
+                # Now get the weather report
+                weatherURL = url + "snow-report/"
+                print "Processing the snow report at: " + weatherURL
+                weatherHTML = download(weatherURL, headers, proxy=proxy, num_retries=num_retries)
                 if scrape_callback:
-                    scrape_callback(url, html)
+                    scrape_callback(url, html, weatherHTML)
                 print "Scraping the site: " + url
+                
 
             else:
                 print "Depth exceeds 1, Sorry will not scrape the site :" + url
@@ -175,12 +181,12 @@ def fixUnicode(string):
 class ScrapeCallback2:
     def __init__(self):
         self.writer = csv.writer(open('resort2.info', 'w'))
-        self.fields = ('resortName', 'ticketPrice', 'beginner', 'inter', 'advanced', 'season', 'rating','image link')
+        self.fields = ('resortName', 'ticketPrice', 'beginner', 'inter', 'advanced', 'season', 'rating','image link', 'UpdateDate', 'SnowDepth',  'RunStatus')
         self.writer.writerow(self.fields)
-        self.writer = csv.writer(open('resort2.weather', 'w'))
-        self.fields = ('resortName', 'UpdateDate', 'SnowDepth',  'RunStatus')
+        #self.writer = csv.writer(open('resort2.weather', 'w'))
+        #self.fields = ('resortName', 'UpdateDate', 'SnowDepth',  'RunStatus')
 
-    def __call__(self, url, html):
+    def __call__(self, url, html, weatherHTML):
         """ This routine extracts the data from the individual pages to be stored in a table """
         soup = BeautifulSoup(html, 'html.parser')
         resortName = soup.find(class_="fn").string
@@ -213,11 +219,41 @@ class ScrapeCallback2:
         imageSrc = imageTag['src']
         imageSrc = fixUnicode(imageSrc)
         imageSrc = "http://www.skiresort.info/" + imageSrc
-        results = (resortName, ticketPrice, beginner, intermed, advanced, season, rating, imageSrc)
-        self.writer.writerow(results)
+
+        # Handle the weather report
+        Weather = BeautifulSoup(weatherHTML, 'html.parser')
+        # Get the date of update
+        weatherSect = Weather.find(class_=("col-md-8"))
+        weatherFine = weatherSect.find(class_=("detail-links"))
+        weatherFinest = weatherFine.find(class_=("description"))
+        if weatherFinest != None:
+            updateDate = weatherFinest.string
+        else:
+            updateDate = "NULL"
+        updateDate = fixUnicode(updateDate)
+        
+        # Get the current status
+        openStatus = weatherSect.find(class_="open")
+        if openStatus != None:
+            openStatus = fixUnicode(openStatus.string)
+        else:
+            openStatus = "NULL"
+        
+        # Get the snow depth
+        snowDepth = weatherSect.tbody.td
+        if snowDepth != None:        
+            snowDepth = fixUnicode(snowDepth.string)
+        else:
+            snowDepth = "NULL"
+        
+        # Write the final results
+        results = (resortName, ticketPrice, beginner, intermed, advanced, season, rating, imageSrc, updateDate, snowDepth, openStatus)
+        self.writer.writerow(results)       
+        
+        
 
        
 
 if __name__ == '__main__':
-    test_crawler('http://www.skiresort.info/ski-resorts/usa/page/2/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
-#    test_crawler('http://www.skiresort.info/ski-resorts/usa/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
+#    test_crawler('http://www.skiresort.info/ski-resorts/usa/page/2/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
+    test_crawler('http://www.skiresort.info/ski-resorts/usa/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
