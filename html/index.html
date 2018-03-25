@@ -1,95 +1,86 @@
 <html>
-   
 <head>
-<meta charset="utf-8" />
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <title>VacaFun Ski Planning</title>        
+  <meta charset="utf-8" />
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-    
-    
-<h1> VACAFUN Website:  Your Gateway to your optimal ski vacation!!!</h1>
+  <nav class="navbar navbar-top navbar-expand-sm">
+    <a class="navbar-link navbar-brand" href="index.html">VacaFun</a>
 
-<h2>  Insert Data to the Database manually here </h2>
-<br>
- <form action="/insert_action2.php">
-   <table style="width:60%">
-     <tr>
-       <th>Name:</th>
-       <th>City:</th>
-       <th>State:</th>
-       <th>Lift Price:</th>
-     </tr>
-     <tr>
-       <td> <input type="text" name="resortName"> </td>
-       <td> <input type="text" name="city"> </td>
-       <td> <input type="text" name="state"> </td>
-       <td> <input type="text" name="liftPrice"> </td>
-     </tr>
-   </table>
-   <br>
-   <input type="submit" value="Submit">
-</form> 
-<br>
-<h2>  Update Data within the Database manually here </h2>
-<br>
- <form action="/update_action.php">
-   <table style="width:60%">
-     <tr>
-       <th>Name (Old -> New):</th>
-       <th>City (Old -> New):</th>
-       <th>State (Old -> New):</th>
-       <th>Lift Price (Old -> New):</th>
-     </tr>
-     <tr>
-       <td> <input type="text" name="oldResortName"> </td>
-       <td> <input type="text" name="oldCity"> </td>
-       <td> <input type="text" name="oldState"> </td>
-       <td> <input type="text" name="oldLiftPrice"> </td>
-     </tr>
-     <tr>
-       <td> <input type="text" name="newResortName"> </td>
-       <td> <input type="text" name="newCity"> </td>
-       <td> <input type="text" name="newState"> </td>
-       <td> <input type="text" name="newLiftPrice"> </td>
-     </tr>
-   </table>
-   <br>
-   <input type="submit" value="Submit">
-</form> 
-<h2>  Search Data within the Database manually here </h2>
-<br>
- <form action="/search_action.php">
-   <table style="width:60%">
-     <tr>
-       <th>Name:</th>
-       <th>City:</th>
-       <th>State:</th>
-       <th>Lift Price:</th>
-     </tr>
-     <tr>
-       <td> <input type="text" name="resortName"> </td>
-       <td> <input type="text" name="city"> </td>
-       <td> <input type="text" name="state"> </td>
-       <td> <input type="text" name="liftPrice (less than)"> </td>
-     </tr>
-   </table>
-   <br>
-   <input type="submit" value="Submit">
-</form> 
+    <div>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="insert.php">Create</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="update.php">Update</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="search.php">Search</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <section class="banner">
+    <h1>Welcome to VacaFun:</h1>
+    <p>Your Gateway to your optimal ski vacation!</p>
+  </section>
 
-<br>
-<h2> Search Results are as follows: </h2>
+  <section class="my-3">
+        <div class="d-flex">
+            <article class="col">
+                <header>
+                    <h3>Create New Resort</h3>
+                </header>
+                <p>This option allows you to create a new resort by filling out the information necessary such as the resort name, where it is located, and the lift price at this resort.</p>
+                <footer>
+                    <a href="insert.php" class="btn btn-primary">Create</a>
+                </footer>
+            </article>
+            <article class="col">
+                <header>
+                    <h3>Update Resort</h3>
+                </header>
+                <p>This option allows you to update the resort information by searching for the resort and either updating the name, where it is located, and/or the lift price.</p>
+                <footer>
+                    <a href="update.php" class="btn btn-primary">Update</a>
+                </footer>
+            </article>
+            <article class="col">
+                <header>
+                    <h3>Search for Resort</h3>
+                </header>
+                <p>This option allows you to search for the resort by entering the information such as the resort name, where it is located, and/or the lift price into the search bar.</p>
+                <footer>
+                    <a href="search.php" class="btn btn-primary">Search</a>
+                </footer>
+            </article>
+        </div>
+  </section>
 
-<!-- <button class="btn btn-success" onclick="$(this).hide();"> Click me!</button> -->
+  <!-- Footer -->
+  <footer id="footer" class="navbar navbar-bottom navbar-expand-sm">
+      <ul id="footer" class="navbar-nav mr-auto">
+            <li><a class="nav-link" href="https://www.facebook.com/">Facebook</a></li>
+            <li><a class="nav-link" href="https://twitter.com/?lang=en">Twitter</a></li>
+            <li><a class="nav-link" href="https://www.linkedin.com/">LinkedIn</a></li>
+            <li><a class="nav-link" href="https://www.pinterest.com/">Pinterest</a></li>
+            <li><a class="nav-link" href="https://vimeo.com/">Vimeo</a></li>
+      </ul>
+      <li class="nav-link">&copy; VacaFun Ski Planning</li>                        
+  </footer>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
 </body>
+
 </html>

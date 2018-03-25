@@ -1,0 +1,50 @@
+.main-content {
+    margin-left: 150px;
+    margin-top: 100px;
+    max-width: 1000px;
+}
+
+.content-title {
+    margin-bottom: 30px;
+}
+
+.form-fixed {
+    margin-right: 800px;
+}
+
+.banner {
+    padding: 9em 0 10em 0;
+        /* Image taken from free repository from wikipedia from the following link: https://commons.wikimedia.org/wiki/File%3AVerschneite_Landschaft.jpg*/
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/41/Verschneite_Landschaft.jpg');
+    background-size: cover;
+    background-position: top;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.banner h1 {
+    font-size: 3.5em;
+    font-weight: 100;
+    color: white;
+}
+
+.banner p {
+    margin-top: 0.1em;
+    font-size: 1.4em;
+    color: white;
+    margin-bottom: 2.95em;
+}
+
+.navbar-bottom {
+    border-top: 0.3em solid black;    
+}
+
+.navbar-top {
+    border-bottom: 0.3em solid black;    
+}
+
+.main-content {
+    margin-left: 3rem;
+    margin-top: 3rem;
+}
