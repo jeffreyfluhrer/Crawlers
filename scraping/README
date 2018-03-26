@@ -15,3 +15,23 @@ Removed the resorts from Canada out of the list
 Created a python script that is able to crawl through the skiresortsinfo page
 
 TODO: Need to add a scraper for it to extract all the data from each subordinate webpage
+
+3/25/2018
+----------------
+Added test_crawler2.py which has the ability to scrape the resort.info web and grab the resort info from
+the pages.  This does so on a 50 page basis.
+
+TODO:  Need to take the resort-info files and merge them together to form an entire resort page
+that can be loaded to the SQL database.
+
+3/25/2018
+-----------------
+Added weather info to the resort-info table
+
+3/26/2018
+-----------------
+Created a scraper that pulls down all the locations for all resorts in US
+named wikiscraper2.py.  The list is stored in resort3.info
+
+TODO:  Need to merge data from resort2.info with resort3.info and then
+should be able to fill up the database except for the travel info.
