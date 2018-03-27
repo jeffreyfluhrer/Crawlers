@@ -44,13 +44,14 @@ def massage(file1):
     difficulty = manipDifficulty(beginner, intermed, advanced)
     startSeason = manipStartSeason(season)
     endSeason = manipEndSeason(season)
-    writeResort(resortCSV, Resort, ticketPrice, difficulty, startSeason, endSeason)
+    rating = manipRating(rating)
+    writeResort(resortCSV, Resort, ticketPrice, difficulty, startSeason, endSeason, image, rating)
                                                                              
-def writeResort(csv, resort, price, difficulty, startSeason, endSeason):
+def writeResort(csv, resort, price, difficulty, startSeason, endSeason, image, rating):
     length = len(resort)
     i = 0
     while i < length:
-        fields = (resort[i],"city", "state", startSeason[i], endSeason[i], price[i], difficulty[i])
+        fields = (resort[i],"city", "state", startSeason[i], endSeason[i], image[i], rating[i], difficulty[i])
         csv.writerow(fields)
         i = i + 1            
     
@@ -113,6 +114,20 @@ def manipEndSeason(season):
         seasonEnd.append(endDate)
         i = i + 1
     return seasonEnd
+
+def manipRating(rating):
+    ratingOut = []
+    i = 0
+    length = len(rating)
+    while i < length:
+        if rating[i] == 'NULL':
+            rate = 3.0;
+        else:
+            output = re.findall(r'\d+\.\d+',rating[i])
+            rate = output[0]
+        ratingOut.append(rate)
+        i = i + 1
+    return ratingOut
 
 def Entry2Float(str):
     paren = re.search('\(([^)]+)', str).group(1)
