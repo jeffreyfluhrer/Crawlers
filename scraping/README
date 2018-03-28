@@ -35,3 +35,7 @@ named wikiscraper2.py.  The list is stored in resort3.info
 
 TODO:  Need to merge data from resort2.info with resort3.info and then
 should be able to fill up the database except for the travel info.
+
+3/28/2018
+------------------
+The massager will create all four tables that can be loaded in to the SQL database.  A bit primitive still.
