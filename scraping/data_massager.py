@@ -147,7 +147,6 @@ def manipStartSeason(season):
     while i < length:
         if season[i] == "NULL":
             startDate = '2017-11-15'
-#        endDate = '2018-04-18'
         else:
             match = re.search('\d{4}-\d{2}-\d{2}', season[i])
             startDate = match.group(0)
@@ -164,7 +163,9 @@ def manipEndSeason(season):
         if season[i] == "NULL":
             endDate = '2017-11-15'
         else:
-            match = re.search('\d{4}-\d{2}-\d{2}', season[i])
+            end = season[i]
+            end = end[10:]
+            match = re.search('\d{4}-\d{2}-\d{2}', end)
             endDate = match.group(0)
         seasonEnd.append(endDate)
         i = i + 1
