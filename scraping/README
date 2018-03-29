@@ -41,3 +41,7 @@ should be able to fill up the database except for the travel info.
 The massager will create all four tables that can be loaded in to the SQL database.  A bit primitive still.
 
 Fixed a bug with endSeasonDate for resort table
+
+3/29/2018
+-------------------
+Added the ability to scrape out the city and state where the resort is located
