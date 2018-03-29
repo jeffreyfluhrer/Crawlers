@@ -186,7 +186,7 @@ def findStateWithin(Str):
         stateSear = re.escape(state)
         if re.search(stateSear, lowerStr):
             return re.search(stateSear, lowerStr).group()
-    return "california"
+    return None
     
 
 
@@ -269,8 +269,15 @@ class ScrapeCallback2:
         # Get the state results
         #state = 'state here'
         text = soup.find(class_="panel-simple")
-        statePara = text.p.a
-        state = findStateWithin(statePara.string)
+        statePara = text.p
+        links = statePara.find_all('a')
+        for link in links:
+            state = findStateWithin(link.string)
+            if state != None:
+                break
+        if state == None:
+            state = 'california'
+        print "The state found is " + state
 
         # Write the final results
         results = (resortName, ticketPrice, beginner, intermed, advanced, season, rating,

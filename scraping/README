@@ -47,3 +47,5 @@ Fixed a bug with endSeasonDate for resort table
 Added the ability to scrape out the city and state where the resort is located
 
 Added the correct cities and states to the massager
+
+Fixed a bug with reading states
