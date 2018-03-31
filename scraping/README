@@ -53,3 +53,5 @@ Fixed a bug with reading states
 3/31/2018
 --------------------
 Added weatherforecast for entire season -- Note: Some of this data is modeled and not real
+
+Added stay pricing for the entire season as well
