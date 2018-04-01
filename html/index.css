@@ -45,6 +45,7 @@
 .navbar-nav navbar-right > li{
     float: right;
 }
+/*Icons for the login and sign up from the free icons from glyphicons*/
 ul.navbar-nav > li span.glyphicon {
     width: 18px;
 }
