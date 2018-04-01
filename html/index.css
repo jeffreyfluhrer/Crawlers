@@ -39,11 +39,15 @@
 .navbar-bottom {
     border-top: 0.3em solid black;    
 }
-
 .navbar-top {
     border-bottom: 0.3em solid black;    
 }
-
+.navbar-nav navbar-right > li{
+    float: right;
+}
+ul.navbar-nav > li span.glyphicon {
+    width: 18px;
+}
 .main-content {
     margin-left: 3rem;
     margin-top: 3rem;
