@@ -3,8 +3,8 @@
 function ConnectDatabase() {
   
   $servername = "localhost";
-  $username = "*********";
-  $password = "*********";
+  $username = "fluhrer2_jeff";
+  $password = "rock2RULE";
 
   // Create connection
   $conn = new mysqli($servername, $username, $password);
@@ -21,7 +21,7 @@ function ConnectDatabase() {
   
 function ChooseDatabase($conn) {
   
-    $sql = "USE *******";
+    $sql = "USE fluhrer2_test1";
 
   if ($conn->query($sql) === TRUE) {
       //echo "<br>Database selected";
@@ -31,10 +31,14 @@ function ChooseDatabase($conn) {
   return $conn;
 }
 
-function InsertValue($conn, $Name = "NULL", $City = "NULL", $State = "NULL", $LiftPrice= "NULL") {
+function InsertValue($conn, $Name = "NULL", $City = "NULL", $State = "NULL", $StartDate= "NULL", $EndDate= "NULL",
+                     $URL= "NULL", $Rating= "NULL", $Difficulty= "NULL") {
 
-  $sql = "INSERT INTO Resort (Name, City, State, LiftPrice) VALUES ('" . $Name . "', '" . $City . "', '" . $State . "'," . $LiftPrice . ")";
+  $sql = "INSERT INTO Resort (ResortName, City, State, SeasonStartDate, SeasonEndDate, ImageURL, rating, difficulty) VALUES 
+         ('" . $Name . "', '" . $City . "', '" . $State . "', '" . $StartDate . "', '" . $EndDate .
+         "', '" . $URL . "', " . $Rating . ", " . $Difficulty . ")";
 
+  //printf("<br>Here is the insertion string %s", $sql);
   if ($conn->query($sql) === TRUE) {
     $returnVal = "New record created successfully.";
   } else {
@@ -43,37 +47,21 @@ function InsertValue($conn, $Name = "NULL", $City = "NULL", $State = "NULL", $Li
   return $returnVal;
 }
 
-function FormSelectResort($Name, $City, $State, $LiftPrice) {
+function FormSelectResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Rating, $Difficulty) {
 
   $sql = "SELECT * FROM Resort";
 
   $where = "";
-
-  // Form the WHERE clause here
-  if (strlen($Name) != 0) {
-    $where = $where . "Name = \"" . $Name . "\" ";
-  }
-
-  if (strlen($City) != 0) {
-    if(strlen($where) != 0) {
-      $where = $where . "AND ";
-    }
-    $where = $where . "City = \"" . $City . "\" ";
-  }
-
-  if (strlen($State) != 0) {
-    if(strlen($where != 0)) {
-      $where = $where . " AND ";
-    }
-    $where = $where . "State = \"" . $State . "\" ";
-  }
-
-  if (strlen($LiftPrice) != 0) {
-    if(strlen($where) != 0) {
-      $where = $where . " AND ";
-    }
-    $where = $where . "LiftPrice < \"" . $LiftPrice . "\" ";
-  }
+  $where = FormWhereSection($where, "ResortName", $Name, 1, 1);
+  $where = FormWhereSection($where, "City", $City, 0, 1);
+  $where = FormWhereSection($where, "State", $State, 0, 1);
+  $where = FormWhereSection($where, "SeasonStartDate", $StartDate, 0, 1);
+  $where = FormWhereSection($where, "SeasonEndDate", $EndDate, 0, 1);
+  $where = FormWhereSection($where, "ImageURL", $URL, 0, 1);
+  $where = FormWhereSection($where, "rating", $Rating, 0, 1);
+  $where = FormWhereSection($where, "difficulty", $Difficulty, 0, 1);
+    
+  //printf("<br> Here is the where clause %s",$where);  
 
   if(strlen($where) != 0) {
     $sql = $sql . " WHERE " . $where;
@@ -83,99 +71,49 @@ function FormSelectResort($Name, $City, $State, $LiftPrice) {
 
 function FormUpdateResort() {
 
-$where = "";
-
 // Form the WHERE clause here
-if (strlen($_POST["oldResortName"]) != 0) {
-  $where = $where . "Name = \"" . $_POST["oldResortName"] . "\" ";
-}
-
-if (strlen($_POST["oldCity"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . "AND ";
-   }
-  $where = $where . "City = \"" . $_POST["oldCity"] . "\" ";
-}
-
-if (strlen($_POST["oldState"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . "AND ";
-  }
-  $where = $where . "State = \"" . $_POST["oldState"] . "\" ";
-}
-
-if (strlen($_POST["oldLiftPrice"]) != 0) {
-  if(strlen($where) != 0) {
-    $where = $where . " AND ";
-  }
-  $where = $where . "LiftPrice = \"" . $_POST["oldLiftPrice"] . "\" ";
-}
-
-$set = "";
+$where = "";
+$where = FormWhereSection($where, "ResortName", $_GET["oldResortName"], 1, 1);
+$where = FormWhereSection($where, "City", $_GET["oldCity"], 0, 1);
+$where = FormWhereSection($where, "State", $_GET["oldState"], 0, 1);
+$where = FormWhereSection($where, "SeasonStartDate", $_GET["oldStartDate"], 0, 1);
+$where = FormWhereSection($where, "SeasonEndDate", $_GET["oldEndDate"], 0, 1);
+$where = FormWhereSection($where, "ImageURL", $_GET["oldURL"], 0, 1);
+$where = FormWhereSection($where, "rating", $_GET["oldRating"], 0, 1);
+$where = FormWhereSection($where, "difficulty", $_GET["oldDifficulty"], 0, 1);
 
 // Form the SET clause here
-if (strlen($_POST["newResortName"]) != 0) {
-  $set = $set . "Name = \"" . $_POST["newResortName"] . "\" ";
-}
-
-if (strlen($_POST["newCity"]) != 0) {
-  if(strlen($set) != 0) {
-    $set = $set . "AND ";
-   }
-  $set = $set . "City = \"" . $_POST["newCity"] . "\" ";
-}
-
-if (strlen($_POST["newState"]) != 0) {
-  if(strlen($set) != 0) {
-    $set = $set . "AND ";
-  }
-  $set = $set . "State = \"" . $_POST["newState"] . "\" ";
-}
-
-if (strlen($_POST["newLiftPrice"]) != 0) {
-  if(strlen($set) != 0) {
-    $set = $set . " AND ";
-  }
-  $set = $set . "LiftPrice = \"" . $_POST["newLiftPrice"] . "\" ";
-}
-
+$set = "";
+$set = FormWhereSection($set, "ResortName", $_GET["newResortName"], 1, 1);
+$set = FormWhereSection($set, "City", $_GET["newCity"], 0, 1);
+$set = FormWhereSection($set, "State", $_GET["newState"], 0, 1);
+$set = FormWhereSection($set, "SeasonStartDate", $_GET["newStartDate"], 0, 1);
+$set = FormWhereSection($set, "SeasonEndDate", $_GET["newEndDate"], 0, 1);
+$set = FormWhereSection($set, "ImageURL", $_GET["newURL"], 0, 1);
+$set = FormWhereSection($set, "rating", $_GET["newRating"], 0, 1);
+$set = FormWhereSection($set, "difficulty", $_GET["newDifficulty"], 0, 1);
 
 $sql = "UPDATE Resort SET " . $set . " WHERE " . $where;
+
+printf("<br>The update command is:  %s",$sql);
 
 return $sql;
 
 }
 
-function FormDeleteResort($Name, $City, $State, $LiftPrice) {
+function FormDeleteResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Rating, $Difficulty) {
 
   $where = "";
 
   // Form the WHERE clause here
-  if (strlen($Name) != 0) {
-    $where = $where . "Name = \"" . $Name . "\" ";
-  }
-
-  if (strlen($City) != 0) {
-    if(strlen($where) != 0) {
-      $where = $where . "AND ";
-     }
-    $where = $where . "City = \"" . $City . "\" ";
-  }
-
-  if (strlen($State) != 0) {
-    if(strlen($where) != 0) {
-      $where = $where . "AND ";
-    }
-    $where = $where . "State = \"" . $State . "\" ";
-  }
-
-  if (strlen($LiftPrice) != 0) {
-    if(strlen($where) != 0) {
-      $where = $where . " AND ";
-    }
-    $where = $where . "LiftPrice = \"" . $LiftPrice . "\" ";
-  }
-
+  $where = FormWhereSection($where, "ResortName", $Name, 1, 1);
+  $where = FormWhereSection($where, "City", $City, 0, 1);
+  $where = FormWhereSection($where, "State", $State, 0, 1);
+  $where = FormWhereSection($where, "SeasonStartDate", $StartDate, 0, 1);
+  $where = FormWhereSection($where, "SeasonEndDate", $EndDate, 0, 1);
+  $where = FormWhereSection($where, "ImageURL", $URL, 0, 1);
+  $where = FormWhereSection($where, "rating", $Rating, 0, 1);
+  $where = FormWhereSection($where, "difficulty", $Difficulty, 0, 1);
 
   $sql = "DELETE FROM Resort WHERE " . $where;
 
@@ -194,18 +132,26 @@ function PerformQuery($conn, $sql) {
       echo "<th scope=\"col\">Name</th>";
       echo "<th scope=\"col\">City</th>";
       echo "<th scope=\"col\">State</th>";
-      echo "<th scope=\"col\">Lift Price</th>";
+      echo "<th scope=\"col\">Start of Season Date</th>";
+      echo "<th scope=\"col\">End of Season Date</th>";
+      echo "<th scope=\"col\">Image URL</th>";
+      echo "<th scope=\"col\">Rating</th>";
+      echo "<th scope=\"col\">Difficulty</th>";
       echo "<th scope=\"col\">Delete?</th>";
       echo "</tr>";
       echo "<thead>";
       // output data of each row
       echo "<tbody>";
       while($row = $result->fetch_assoc()) {
-        echo "<form method=\"post\" action=\"/search.php\">";
-        echo "<td> <input type=\"text\" name=\"resortName\" value=\"" . $row["Name"] . "\"></td>";
+        echo "<form method=\"get\" action=\"/search.php\">";
+        echo "<td> <input type=\"text\" name=\"resortName\" value=\"" . $row["ResortName"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"city\" value=\"" . $row["City"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"state\" value=\"" . $row["State"] . "\"></td>";
-        echo "<td> <input type=\"text\" name=\"liftPrice\" value=\"" . $row["LiftPrice"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"startDate\" value=\"" . $row["SeasonStartDate"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"endDate\" value=\"" . $row["SeasonEndDate"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"URL\" value=\"" . $row["ImageURL"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"rating\" value=\"" . $row["rating"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"difficulty\" value=\"" . $row["difficulty"] . "\"></td>";
         echo "<td> <input type=\"hidden\" name=\"delete\" value=\"true\"> <input type=\"submit\" value=\"Delete\"></td>";
         echo "</tr>";
         echo "</form>";
@@ -218,5 +164,52 @@ function PerformQuery($conn, $sql) {
   }
 
 } 
+
+function FormWhereSection($where, $varName, $value, $startOfWhere, $stringVal) {
+
+    // Form the WHERE clause here
+    if (strlen($value) != 0) {
+        if(!$startOfWhere && strlen($where) != 0)
+            $where = $where . "AND ";
+        if($stringVal)
+            $where = $where .  $varName . " = \"" . $value . "\" ";
+        else
+            $where = $where .  $varName . " = " . $value;
+    }
+    return $where;
+}
+
+function GetUserInfo($conn,$username,$password) {
+    
+    $sql = "SELECT * FROM UserInfo WHERE username =\"" .  $username . "\" AND password = \"" . $password . "\"";
+    //printf("<br> The userinfo sql command is %s",$sql);
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        //printf("<br> Found user info");
+        return $result->fetch_assoc();
+    }
+    else {
+        //printf("<br> Missed user info");
+        return array ();
+    }
+}
+
+
+/*function CheckUserInfo($conn,$username) {
+ printf("<br> Checking user info here");
+ $sql = "SELECT * FROM UserInfo WHERE username =\"" .  $username . "\"";
+ printf("<br> The userinfo sql command is %s",$sql);
+ $result = $conn->query($sql);
+ if ($result->num_rows > 0) {
+ printf("<br> Found user info");
+ return 1;
+ }
+ else {
+ printf("<br> Userinfo not found");
+ return 0;
+ }
+ }
+ */
+
 
 ?>

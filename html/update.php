@@ -36,7 +36,8 @@
 
       include 'Connect.php';
 
-      if (isset($_POST["oldResortName"]) || isset($_POST["city"]) || isset($_POST["state"]) || isset($_POST["liftPrice"])) {      
+      if (isset($_GET["oldResortName"]) || isset($_GET["oldCity"]) || isset($_GET["oldState"]) || isset($_GET["oldStartDate"])
+          || isset($_GET["oldEndDate"]) || isset($_GET["oldURL"]) || isset($_GET["oldRating"]) || isset($_GET["oldDifficulty"])) { 
         $conn = ConnectDatabase();
         $conn = ChooseDatabase($conn);
         $sql = FormUpdateResort();
@@ -49,24 +50,90 @@
       }
   ?>
         <h2 class="content-title">Update existing resort</h2>
-        <form method="post" action="/update.php">
-          <div class="form-group">
-            <label for="oldResortName">Resort name</label>
-            <input type="text" class="form-control" name="oldResortName">
-          </div>
-          <div class="form-group">
-              <label for="city">City</label>
+        <form method="get" action="/update.php">
+        <table> 
+        <tr>
+            <td>
+              <label for="oldResortName">Old Resort name</label>
+              <input type="text" class="form-control" name="oldResortName">
+            </td>
+            <td>
+              <label for="newResortName">New Resort name</label>
+              <input type="text" class="form-control" name="newResortName">
+            </td>
+         </tr>
+        <tr>
+            <td>
+              <label for="oldCity">Old City</label>
+              <input type="text" class="form-control" name="oldCity">
+            </td>
+            <td>
+              <label for="newCity">New City</label>
               <input type="text" class="form-control" name="newCity">
-          </div>
-          <div class="form-group">
-              <label for="state">State</label>
+            </td>
+         </tr>
+        <tr>
+            <td>
+              <label for="oldState">Old State</label>
+              <input type="text" class="form-control" name="oldState">
+            </td>
+            <td>
+              <label for="newState">New State</label>
               <input type="text" class="form-control" name="newState">
-          </div>
-          <div class="form-group">
-              <label for="liftPrice">Lift price</label>
-              <input type="text" class="form-control" name="newLiftPrice">
-          </div>
-          <button type="submit" class="btn btn-primary" >Submit</button>
+            </td>
+         </tr>
+        <tr>
+            <td>
+         	  <label for="oldStartDate">Old Start Date</label>
+          	  <input type="text" class="form-control" name="oldStartDate">
+            </td>
+            <td>
+         	  <label for="newStartDate">New Start Date</label>
+          	  <input type="text" class="form-control" name="newStartDate">
+            </td>
+         </tr>
+        <tr>
+            <td>
+          	  <label for="oldEndDate">Old End Date</label>
+          	  <input type="text" class="form-control" name="oldEndDate"">
+            </td>
+            <td>
+          	  <label for="newEndDate">New End Date</label>
+          	  <input type="text" class="form-control" name="newEndDate"">
+            </td>
+         </tr>
+        <tr>
+            <td>
+        	  <label for="oldURL">Old Image</label>
+          	  <input type="text" class="form-control" name="oldURL">
+            </td>
+            <td>
+        	  <label for="newURL">New Image</label>
+          	  <input type="text" class="form-control" name="newURL">
+            </td>
+         </tr>
+        <tr>
+            <td>
+        	  <label for="oldRating">Old Rating</label>
+          	  <input type="text" class="form-control" name="oldRating">
+            </td>
+            <td>
+        	  <label for="newRating">New Rating</label>
+          	  <input type="text" class="form-control" name="newRating">
+            </td>
+         </tr>
+        <tr>
+            <td>
+        	  <label for="oldDifficulty">Old Difficulty</label>
+          	  <input type="text" class="form-control" name="oldDifficulty">
+            </td>
+            <td>
+        	  <label for="newDifficulty">New Difficulty</label>
+          	  <input type="text" class="form-control" name="newDifficulty">
+            </td>
+         </tr> 
+      	</table>
+        <button type="submit" class="btn btn-primary" >Submit</button>
         </form>
       </div>
     </div>

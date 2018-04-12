@@ -47,9 +47,25 @@
           <input type="text" class="form-control" name="state">
       </div>
       <div class="form-group">
-          <label for="liftPrice">Lift price (less than)</label>
-          <input type="text" class="form-control" name="liftPrice">
+          <label for="startDate">Start of Season Date</label>
+          <input type="text" class="form-control" name="startDate">
       </div>
+            <div class="form-group">
+          <label for="endDate">End of Season Date</label>
+          <input type="text" class="form-control" name="endDate">
+      </div>
+      <div class="form-group">
+          <label for="URL">Image of Resort</label>
+          <input type="text" class="form-control" name="URL">
+      </div>
+      <div class="form-group">
+          <label for="rating">Resort rating (# stars out of five)</label>
+          <input type="text" class="form-control" name="rating">
+      </div>
+      <div class="form-group">
+          <label for="difficulty">Difficulty level on a scale of one to ten</label>
+          <input type="text" class="form-control" name="difficulty">
+      </div>  
       <button type="submit" class="btn btn-primary" >Submit</button>
     </form>
 </div>
@@ -59,22 +75,28 @@
 
     include 'Connect.php';
 
-    if (isset($_GET["resortName"]) || isset($_GET["city"]) || isset($_GET["state"]) || isset($_GET["liftPrice"]) || isset($_POST["delete"])) {
+    if (isset($_GET["resortName"]) || isset($_GET["city"]) || isset($_GET["state"]) || isset($_GET["startDate"])
+        || isset($_GET["endDate"]) || isset($_GET["URL"]) || isset($_GET["rating"]) || isset($_GET["difficulty"])
+        || isset($_GET["delete"])) {
       $conn = ConnectDatabase();
       $conn = ChooseDatabase($conn);
 
-      if (isset($_POST["delete"])) {
-        $sql = FormDeleteResort($_POST["resortName"], $_POST["city"], $_POST["state"], $_POST["liftPrice"]);
-
+      if (isset($_GET["delete"])) {
+          $sql = FormDeleteResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["startDate"],
+              $_GET["endDate"], $_GET["URL"],  $_GET["rating"], $_GET["difficulty"]);
+          //printf("<br>Here is the deletion string %s", $sql);
         if ($conn->query($sql) === TRUE) {
+            
           echo '<div class="alert alert-success" role="alert">Record(s) successfully deleted.</div>';
         } else {
           echo '<div class="alert alert-failure" role="alert">Error: ' . $sql . "<br>" . $conn->error . '</div>';
         }
       }
 
-      $sql = FormSelectResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["liftPrice"]);
+      $sql = FormSelectResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["startDate"],
+          $_GET["endDate"], $_GET["URL"],  $_GET["rating"], $_GET["difficulty"]);
       
+      //printf("<br>Here is the insertion string %s", $sql);
       PerformQuery($conn, $sql);
       
       $conn->close();      
