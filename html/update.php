@@ -1,34 +1,18 @@
+<?php
+    $base = $_SERVER['DOCUMENT_ROOT'];
+    require_once $base . '/core/init.php';
+?>
+
 <html>
 
-<head>
-<title>VacaFun Ski Planning</title>        
-<meta charset="utf-8" />
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-  crossorigin="anonymous">
-
-<link rel="stylesheet" href="index.css">
-</head>
+<?php
+    PageHeader::render('VacaFun Ski Planning');
+?>
 
 
 <body>
-<nav class="navbar navbar-top navbar-expand-sm">
-<a class="navbar-link navbar-brand" href="index.html">VacaFun</a>
-
-<div>
-  <ul class="navbar-nav mr-auto">
-    <li class="nav-item">
-      <a class="nav-link" href="insert.php">Create</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="update.php">Update</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="search.php">Search</a>
-    </li>
-  </ul>
-</div>
-</nav>
+ <!--Navigation Bar-->
+ <?php NavBar::render(); ?>
   <div class="container main-content">
     <div class="row justify-content start">
       <div class="col-auto">

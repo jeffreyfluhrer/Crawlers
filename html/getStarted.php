@@ -1,40 +1,21 @@
-<html>
-<head>
-  <title>VacaFun Ski Planning</title>        
-  <meta charset="utf-8" />
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
-  <!-- http://glyphicons.com/license/ used for icon images: free icons as part of their licensing-->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<?php
+$base = $_SERVER['DOCUMENT_ROOT'];
+require_once $base . '/core/init.php';
 
-  <link rel="stylesheet" href="getStarted.css">
-</head>
+$userPage = new UserPageController();
+$userPage->run();
+
+?>
+
+
+<html>
+<?php
+    PageHeader::render('VacaFun Ski Planning');
+?>
 <body>
     
   <!--Navigation Bar-->
-  <nav class="navbar navbar-top navbar-expand-sm">
-    <a class="navbar-link navbar-brand" href="index.html">VacaFun</a>
-
-    <div class = "container-fluid">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="insert.php">Create</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="update.php">Update</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="search.php">Search</a>
-        </li>
-      </ul>
-      <ul class ="navbar-nav ml-auto">
-          <!--Icons from Glypicons -->
-          <li class = "nav-item"><a class = "nav-link" href="#SignUp"><span class="glyphicon glyphicon-user"></span>Sign Up</a></li>
-            <li class = "nav-item"><a class = "nav-link" href="#Login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
-      </ul>
-    </div>         
-  </nav>
+  <?php NavBar::render(); ?>
     
   <!--Get Started Form--> 
   <!--NEED TO DO: have a php that uses the user's inputs as restrictions--> 
@@ -104,12 +85,6 @@
       </ul>
       <li class="nav-link">&copy; VacaFun Ski Planning</li>                        
   </footer>
-    
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-    crossorigin="anonymous"></script>
 </body>
 
 </html>

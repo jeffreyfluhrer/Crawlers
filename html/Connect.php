@@ -1,11 +1,14 @@
 <?php
 
+$base = $_SERVER['DOCUMENT_ROOT'];
+require_once $base . '/core/init.php';
+
 function ConnectDatabase() {
   
-  $servername = "localhost";
-  $username = "fluhrer2_jeff";
-  $password = "rock2RULE";
-
+  $servername = Config::get('mysql/host');
+  $username = Config::get('mysql/username');
+  $password = Config::get('mysql/password');
+  
   // Create connection
   $conn = new mysqli($servername, $username, $password);
 
@@ -21,7 +24,7 @@ function ConnectDatabase() {
   
 function ChooseDatabase($conn) {
   
-    $sql = "USE fluhrer2_test1";
+    $sql = "USE " . Config::get('mysql/db');
 
   if ($conn->query($sql) === TRUE) {
       //echo "<br>Database selected";

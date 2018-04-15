@@ -46,12 +46,12 @@ if(isset($username) && isset($password)) {
         //$opt_link = urlencode($opt_link);
         printf("<h2> Please continue to the automated Ski Trip Planning Site <a href=" . $opt_link .">here</a>");
     } else {
-        printf("<h2> Sorry, login not found in database, please try again <a href=\"index.html\">here</a> ");
+        printf("<h2> Sorry, login not found in database, please try again <a href=\"index.php\">here</a> ");
     }
 }
 // Didn't receive proper login info
 else {
-    printf("<h2> Sorry, didn't receive proper login/password combo, please try again <a href=\"index.html\">here</a> ");
+    printf("<h2> Sorry, didn't receive proper login/password combo, please try again <a href=\"index.php\">here</a> ");
 }
     
 ?>

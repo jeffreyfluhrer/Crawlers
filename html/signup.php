@@ -1,15 +1,45 @@
-<html>
-<head>
-  <title>VacaFun Signup Page</title>        
-  <meta charset="utf-8" />
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
-  <!-- http://glyphicons.com/license/ used for icon images: free icons as part of their licensing-->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<?php
+$base = $_SERVER['DOCUMENT_ROOT'];
+require_once $base . '/core/init.php';
 
-  <link rel="stylesheet" href="index.css">
-</head>
+$error = '';
+
+if (Input::exists() && Input::validateToken())
+{
+	$validate = new Validate();
+	$validation = $validate->check(
+		$_POST,
+		array(
+			'username' => array(
+				'required' => true,
+			),
+			'password' => array(
+				'required' => true,
+				'matches' => 'password2',
+			),
+	));
+
+	if ($validation->passed())
+	{
+		$username = Input::get('username');
+		$password = Input::get('password');
+		$user = new User();
+
+		if ($user->create($username, $password))
+		{
+			Session::flash('registered', 'Registration successful. Please log in to continue.');
+			Redirect::to('login.php');
+		}
+		else
+		{
+			$error = $user->error();
+		}
+	}
+}
+?>
+
+<html>
+	<?php PageHeader::render('VacaFun Signup Page') ?>
 
   <!-- Banner Section -->
   <section class="banner">
@@ -20,7 +50,9 @@
     	<div class="row justify-content start">
       		<div class="col-auto">
     	<h2 class="content-title">Enter New Account Info:</h2>
-    	<form action="/verify_signup.php" method="post">
+    	<form method="post">
+			<?php Alert::tryRender(Alert::WARNING, $error);?>
+
     		<div class="form-group">
         		<label for="resortName">User Name:</label>
         		<input type="text" class="form-control" name="username">
@@ -32,8 +64,9 @@
     		<div class="form-group">
         		<label for="resortName">Reenter Password:</label>
         		<input type="password" class="form-control" name="password2">
-      		</div>      		
-      		<button type="submit" class="btn btn-primary" >Submit</button>
+				</div>      		
+				<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+      	<button type="submit" class="btn btn-primary" >Submit</button>
 		</form>
 <?php
 
