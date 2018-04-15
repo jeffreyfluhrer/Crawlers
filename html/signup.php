@@ -32,8 +32,12 @@ if (Input::exists() && Input::validateToken())
 		}
 		else
 		{
-			$error = $user->error();
+			$errors = $user->error();
 		}
+	}
+	else
+	{
+		$errors = $validation->errors();
 	}
 }
 ?>
@@ -51,7 +55,7 @@ if (Input::exists() && Input::validateToken())
       		<div class="col-auto">
     	<h2 class="content-title">Enter New Account Info:</h2>
     	<form method="post">
-			<?php Alert::tryRender(Alert::WARNING, $error);?>
+			<?php Alert::tryRender(Alert::WARNING, $errors);?>
 
     		<div class="form-group">
         		<label for="resortName">User Name:</label>
