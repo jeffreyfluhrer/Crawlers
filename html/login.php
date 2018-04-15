@@ -48,8 +48,8 @@ if(Input::exists() && Input::validateToken()){
   
 	<div class="container main-content">
 		<?php
-			Alert::tryRender(Alert::SUCCESS, Session::flash('registered'));
-			Alert::tryRender(Alert::INFO, Session::flash('loginRequired'));
+			Alert::tryRender(Alert::SUCCESS, Session::consume('registered'));
+			Alert::tryRender(Alert::INFO, Session::consume('loginRequired'));
 			Alert::tryRender(Alert::WARNING, $errors);
 		?>
 

@@ -2,7 +2,7 @@
 $base = $_SERVER['DOCUMENT_ROOT'];
 require_once $base . '/core/init.php';
 
-$error = '';
+$errors = '';
 
 if (Input::exists() && Input::validateToken())
 {
@@ -27,7 +27,7 @@ if (Input::exists() && Input::validateToken())
 
 		if ($user->create($username, $password))
 		{
-			Session::flash('registered', 'Registration successful. Please log in to continue.');
+			Session::put('registered', 'Registration successful. Please log in to continue.');
 			Redirect::to('login.php');
 		}
 		else

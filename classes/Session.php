@@ -17,8 +17,8 @@ class Session{
 			unset($_SESSION[$name]);
 		}
 	}
-	
-	public static function flash($name, $messages = '')
+
+	public static function consume($name)
 	{
 		if (self::exists($name))
 		{
@@ -27,10 +27,8 @@ class Session{
 
 			return $value;
 		}
-		else
-		{
-			self::put($name, $messages);
-		}
+
+		return null;
 	}
 	
 }

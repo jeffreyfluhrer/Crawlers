@@ -12,7 +12,7 @@ class UserPageController
 
         if(!$user->isLoggedIn())
         {
-            Session::flash('loginRequired', 'You must be logged in to perform this action.');
+            Session::put('loginRequired', 'You must be logged in to perform this action.');
             Redirect::to('login.php');
         }
     }
