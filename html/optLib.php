@@ -295,7 +295,7 @@ function UpdateUserInfo($conn,$username,$tripDate,$tripDuration,$level,$location
 
 }
 
-function DefaultTableResponse($username, $leftResort, $rightResort) {
+function DefaultTableResponse($leftResort, $rightResort) {
 /*  </tr>
     <tr>
     <form action="/optimize.php">
@@ -310,7 +310,6 @@ function DefaultTableResponse($username, $leftResort, $rightResort) {
     <input type="radio" name="rightfeedback" value="dislike"> Dislike<br>
     <input type="radio" name="rightfeedback" value="want"> I want this!!<br><br>
     <input name="_rightresort" type="hidden" value="<?php echo $twoResorts[1]?>">
-    <input name="username" type="hidden" value="<?php echo $username?>">
     <input type="submit">
     </td>
     </form>
@@ -326,7 +325,6 @@ function DefaultTableResponse($username, $leftResort, $rightResort) {
            <input type=\"radio\" name=\"rightfeedback\" value=\"dislike\"> Dislike<br>
            <input type=\"radio\" name=\"rightfeedback\" value=\"want\"> I want this!!<br><br>
            <input name=\"_rightresort\" type=\"hidden\" value=\"" . $rightResort . "\">
-    	   <input name=\"username\" type=\"hidden\" value=\"" . $username . "\">
     	   <input type=\"submit\"></td></form></tr></table>";
     return $str;
 }
