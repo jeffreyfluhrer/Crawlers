@@ -64,8 +64,7 @@ $userPage->run();
                   <!-- <input type="text" required name="origin" class="form-control" id="origin" placeholder="New York, Chicago, LA, Boston..."> -->
               </div>
           </div> 
-                  <input name="username" type="hidden" value="<?php echo $_GET["username"]?>">
-                  <input name="password" type="hidden" value="<?php echo $_GET["password"]?>">                             
+                  <input name="initialDefine" type="hidden" value="1">                           
           <div class="form-group"> 
               <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Submit</button>

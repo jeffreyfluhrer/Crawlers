@@ -286,6 +286,15 @@ function AddUserInfo($conn,$username,$password,$tripDate,$tripDuration,$level,$l
     }    
 }
 
+function UpdateUserInfo($conn,$username,$tripDate,$tripDuration,$level,$location,$budget) {
+    $sql = "UPDATE UserInfo SET tripDate = \"" . $tripDate . "\", tripDuration = " . $tripDuration . ", level = " . 
+           $level . ", location = \"" . $location . "\", budget = " . $budget . 
+           " WHERE username =\"" .  $username . "\"";
+    //printf("<br> The userinfo sql command is %s",$sql);
+    return $conn->query($sql);
+
+}
+
 function DefaultTableResponse($username, $leftResort, $rightResort) {
 /*  </tr>
     <tr>

@@ -1,13 +1,26 @@
 <html>
+
 <?php
+$base = $_SERVER['DOCUMENT_ROOT'];
+require_once $base . '/core/init.php';
+
+$userPage = new UserPageController();
+$userPage->run();
+
+?>
+
+<?php
+
     PageHeader::render('VacaFun Ski Planning');
 ?>
 <body>
     
   <!--Navigation Bar-->
-  <?php NavBar::render(); ?>
+  <?php 
+  NavBar::render(); ?>
 
 <?php
+//printf("<br> Made it here");
 if(!strcmp($_GET["leftfeedback"],"want") || !strcmp($_GET["rightfeedback"],"want"))
     echo "<h1> Here is the info on the Resort you chose </h1>";
 else
@@ -38,13 +51,13 @@ ini_set("default_charset", "UTF-8");
 $conn = ConnectDatabase();
 $conn = ChooseDatabase($conn);
 //echo "<br>Connected to the database";
+$user = new User();
+$username = $user->data()->username;
 
 // Step 2:  Get the current user id
 // TODO:  Don't have a calling PHP code so will have to hardcode this for now (Later implement the receipt of the vars)
-if(strlen($_GET["username"]) != 0) {
-    //printf("<br>The user name is %s",$_GET["username"]);
-    $username = $_GET["username"];
-    $password = $_GET["password"];
+if(!strcmp($_GET["initialDefine"],"1")) {
+    //printf("<br>The user name is %s",$username);
     $tripDate = $_GET["date"];
     $tripDuration = $_GET["duration"];
     $level = $_GET["difficulty"];
@@ -52,7 +65,7 @@ if(strlen($_GET["username"]) != 0) {
     $budget = $_GET["price"];
     // Check if user is already in database otherwise add info to database
     //printf("<br> Checking the user info here with username = %s",$username);
-    AddUserInfo($conn,$username,$password,$tripDate,$tripDuration,$level,$location,$budget);
+    UpdateUserInfo($conn,$username,$tripDate,$tripDuration,$level,$location,$budget);
 }
 
 
