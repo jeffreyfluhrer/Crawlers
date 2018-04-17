@@ -21,7 +21,7 @@
       include 'Connect.php';
 
       if (isset($_GET["oldResortName"]) || isset($_GET["oldCity"]) || isset($_GET["oldState"]) || isset($_GET["oldStartDate"])
-          || isset($_GET["oldEndDate"]) || isset($_GET["oldURL"]) || isset($_GET["oldRating"]) || isset($_GET["oldDifficulty"])) { 
+          || isset($_GET["oldEndDate"]) || isset($_GET["oldURL"]) || isset($_GET["oldMap"]) || isset($_GET["oldRating"]) || isset($_GET["oldDifficulty"])) { 
         $conn = ConnectDatabase();
         $conn = ChooseDatabase($conn);
         $sql = FormUpdateResort();
@@ -96,6 +96,16 @@
           	  <input type="text" class="form-control" name="newURL">
             </td>
          </tr>
+         <tr>
+            <td>
+        	  <label for="oldURL">Old Map</label>
+          	  <input type="text" class="form-control" name="oldMap">
+            </td>
+            <td>
+        	  <label for="newURL">New Map</label>
+          	  <input type="text" class="form-control" name="newMap">
+            </td>
+        </tr>
         <tr>
             <td>
         	  <label for="oldRating">Old Rating</label>

@@ -19,11 +19,11 @@ require_once $base . '/core/init.php';
             include 'Connect.php';
 
             if (isset($_POST["resortName"]) || isset($_POST["city"]) || isset($_POST["state"]) || isset($_POST["startDate"]) 
-                || isset($_POST["endDate"]) || isset($_POST["URL"]) || isset($_POST["rating"]) || isset($_POST["difficulty"])) {      
+                || isset($_POST["endDate"]) || isset($_POST["URL"]) || isset($_POST["map"]) || isset($_POST["rating"]) || isset($_POST["difficulty"])) {      
               $conn = ConnectDatabase();
               $conn = ChooseDatabase($conn);
               $returnMsg = InsertValue($conn, $_POST["resortName"], $_POST["city"],  $_POST["state"], $_POST["startDate"],
-                  $_POST["endDate"], $_POST["URL"],  $_POST["rating"], $_POST["difficulty"]);
+                  $_POST["endDate"], $_POST["URL"], $_POST["map"],  $_POST["rating"], $_POST["difficulty"]);
             
               echo '<div class="alert alert-success" role="alert">' . $returnMsg . '</div>';
             }
@@ -53,6 +53,10 @@ require_once $base . '/core/init.php';
           <div class="form-group">
               <label for="URL">Image of Resort</label>
               <input type="text" class="form-control" name="URL">
+          </div>
+                    <div class="form-group">
+              <label for="URL">Image of Trail Map</label>
+              <input type="text" class="form-control" name="map">
           </div>
           <div class="form-group">
               <label for="rating">Resort rating (# stars out of five)</label>

@@ -35,11 +35,11 @@ function ChooseDatabase($conn) {
 }
 
 function InsertValue($conn, $Name = "NULL", $City = "NULL", $State = "NULL", $StartDate= "NULL", $EndDate= "NULL",
-                     $URL= "NULL", $Rating= "NULL", $Difficulty= "NULL") {
+                     $URL= "NULL", $Map = "NULL", $Rating= "NULL", $Difficulty= "NULL") {
 
-  $sql = "INSERT INTO Resort (ResortName, City, State, SeasonStartDate, SeasonEndDate, ImageURL, rating, difficulty) VALUES 
+  $sql = "INSERT INTO Resort (ResortName, City, State, SeasonStartDate, SeasonEndDate, ImageURL, ImageMap, rating, difficulty) VALUES 
          ('" . $Name . "', '" . $City . "', '" . $State . "', '" . $StartDate . "', '" . $EndDate .
-         "', '" . $URL . "', " . $Rating . ", " . $Difficulty . ")";
+         "', '" . $URL . "', '" . $Map . "', " . $Rating . ", " . $Difficulty . ")";
 
   //printf("<br>Here is the insertion string %s", $sql);
   if ($conn->query($sql) === TRUE) {
@@ -50,7 +50,7 @@ function InsertValue($conn, $Name = "NULL", $City = "NULL", $State = "NULL", $St
   return $returnVal;
 }
 
-function FormSelectResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Rating, $Difficulty) {
+function FormSelectResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Map, $Rating, $Difficulty) {
 
   $sql = "SELECT * FROM Resort";
 
@@ -61,6 +61,7 @@ function FormSelectResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Rat
   $where = FormWhereSection($where, "SeasonStartDate", $StartDate, 0, 1);
   $where = FormWhereSection($where, "SeasonEndDate", $EndDate, 0, 1);
   $where = FormWhereSection($where, "ImageURL", $URL, 0, 1);
+  $where = FormWhereSection($where, "ImageMap", $Map, 0, 1);
   $where = FormWhereSection($where, "rating", $Rating, 0, 1);
   $where = FormWhereSection($where, "difficulty", $Difficulty, 0, 1);
     
@@ -82,6 +83,7 @@ $where = FormWhereSection($where, "State", $_GET["oldState"], 0, 1);
 $where = FormWhereSection($where, "SeasonStartDate", $_GET["oldStartDate"], 0, 1);
 $where = FormWhereSection($where, "SeasonEndDate", $_GET["oldEndDate"], 0, 1);
 $where = FormWhereSection($where, "ImageURL", $_GET["oldURL"], 0, 1);
+$where = FormWhereSection($where, "ImageMap", $_GET["oldMap"], 0, 1);
 $where = FormWhereSection($where, "rating", $_GET["oldRating"], 0, 1);
 $where = FormWhereSection($where, "difficulty", $_GET["oldDifficulty"], 0, 1);
 
@@ -93,6 +95,7 @@ $set = FormWhereSection($set, "State", $_GET["newState"], 0, 1);
 $set = FormWhereSection($set, "SeasonStartDate", $_GET["newStartDate"], 0, 1);
 $set = FormWhereSection($set, "SeasonEndDate", $_GET["newEndDate"], 0, 1);
 $set = FormWhereSection($set, "ImageURL", $_GET["newURL"], 0, 1);
+$set = FormWhereSection($set, "ImageMap", $_GET["newMap"], 0, 1);
 $set = FormWhereSection($set, "rating", $_GET["newRating"], 0, 1);
 $set = FormWhereSection($set, "difficulty", $_GET["newDifficulty"], 0, 1);
 
@@ -104,7 +107,7 @@ return $sql;
 
 }
 
-function FormDeleteResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Rating, $Difficulty) {
+function FormDeleteResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Map,  $Rating, $Difficulty) {
 
   $where = "";
 
@@ -115,6 +118,7 @@ function FormDeleteResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Rat
   $where = FormWhereSection($where, "SeasonStartDate", $StartDate, 0, 1);
   $where = FormWhereSection($where, "SeasonEndDate", $EndDate, 0, 1);
   $where = FormWhereSection($where, "ImageURL", $URL, 0, 1);
+  $where = FormWhereSection($where, "ImageMap", $Map, 0, 1);
   $where = FormWhereSection($where, "rating", $Rating, 0, 1);
   $where = FormWhereSection($where, "difficulty", $Difficulty, 0, 1);
 
@@ -138,6 +142,7 @@ function PerformQuery($conn, $sql) {
       echo "<th scope=\"col\">Start of Season Date</th>";
       echo "<th scope=\"col\">End of Season Date</th>";
       echo "<th scope=\"col\">Image URL</th>";
+      echo "<th scope=\"col\">Trail URL</th>";
       echo "<th scope=\"col\">Rating</th>";
       echo "<th scope=\"col\">Difficulty</th>";
       echo "<th scope=\"col\">Delete?</th>";
@@ -153,6 +158,7 @@ function PerformQuery($conn, $sql) {
         echo "<td> <input type=\"text\" name=\"startDate\" value=\"" . $row["SeasonStartDate"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"endDate\" value=\"" . $row["SeasonEndDate"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"URL\" value=\"" . $row["ImageURL"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"Map\" value=\"" . $row["ImageMap"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"rating\" value=\"" . $row["rating"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"difficulty\" value=\"" . $row["difficulty"] . "\"></td>";
         echo "<td> <input type=\"hidden\" name=\"delete\" value=\"true\"> <input type=\"submit\" value=\"Delete\"></td>";

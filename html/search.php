@@ -42,6 +42,10 @@
           <label for="URL">Image of Resort</label>
           <input type="text" class="form-control" name="URL">
       </div>
+            <div class="form-group">
+          <label for="URL">Image of Trail Map</label>
+          <input type="text" class="form-control" name="map">
+      </div>
       <div class="form-group">
           <label for="rating">Resort rating (# stars out of five)</label>
           <input type="text" class="form-control" name="rating">
@@ -60,14 +64,14 @@
     include 'Connect.php';
 
     if (isset($_GET["resortName"]) || isset($_GET["city"]) || isset($_GET["state"]) || isset($_GET["startDate"])
-        || isset($_GET["endDate"]) || isset($_GET["URL"]) || isset($_GET["rating"]) || isset($_GET["difficulty"])
+        || isset($_GET["endDate"]) || isset($_GET["URL"]) || isset($_GET["map"]) || isset($_GET["rating"]) || isset($_GET["difficulty"])
         || isset($_GET["delete"])) {
       $conn = ConnectDatabase();
       $conn = ChooseDatabase($conn);
 
       if (isset($_GET["delete"])) {
           $sql = FormDeleteResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["startDate"],
-              $_GET["endDate"], $_GET["URL"],  $_GET["rating"], $_GET["difficulty"]);
+              $_GET["endDate"], $_GET["URL"], $_GET["map"],  $_GET["rating"], $_GET["difficulty"]);
           //printf("<br>Here is the deletion string %s", $sql);
         if ($conn->query($sql) === TRUE) {
             
@@ -78,7 +82,7 @@
       }
 
       $sql = FormSelectResort($_GET["resortName"], $_GET["city"], $_GET["state"], $_GET["startDate"],
-          $_GET["endDate"], $_GET["URL"],  $_GET["rating"], $_GET["difficulty"]);
+          $_GET["endDate"], $_GET["URL"], $_GET["map"],  $_GET["rating"], $_GET["difficulty"]);
       
       //printf("<br>Here is the insertion string %s", $sql);
       PerformQuery($conn, $sql);
