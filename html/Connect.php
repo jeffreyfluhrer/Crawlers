@@ -63,7 +63,7 @@ function FormSelectResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Map
   $where = FormWhereSection($where, "ImageURL", $URL, 0, 1);
   $where = FormWhereSection($where, "ImageMap", $Map, 0, 1);
   $where = FormWhereSection($where, "rating", $Rating, 0, 1);
-  $where = FormWhereSection($where, "difficulty", $Difficulty, 0, 1);
+  $where = FormWhereSection($where, "Difficulty", $Difficulty, 0, 1);
     
   //printf("<br> Here is the where clause %s",$where);  
 
@@ -85,7 +85,7 @@ $where = FormWhereSection($where, "SeasonEndDate", $_GET["oldEndDate"], 0, 1);
 $where = FormWhereSection($where, "ImageURL", $_GET["oldURL"], 0, 1);
 $where = FormWhereSection($where, "ImageMap", $_GET["oldMap"], 0, 1);
 $where = FormWhereSection($where, "rating", $_GET["oldRating"], 0, 1);
-$where = FormWhereSection($where, "difficulty", $_GET["oldDifficulty"], 0, 1);
+$where = FormWhereSection($where, "Difficulty", $_GET["oldDifficulty"], 0, 1);
 
 // Form the SET clause here
 $set = "";
@@ -97,7 +97,7 @@ $set = FormWhereSection($set, "SeasonEndDate", $_GET["newEndDate"], 0, 1);
 $set = FormWhereSection($set, "ImageURL", $_GET["newURL"], 0, 1);
 $set = FormWhereSection($set, "ImageMap", $_GET["newMap"], 0, 1);
 $set = FormWhereSection($set, "rating", $_GET["newRating"], 0, 1);
-$set = FormWhereSection($set, "difficulty", $_GET["newDifficulty"], 0, 1);
+$set = FormWhereSection($set, "Difficulty", $_GET["newDifficulty"], 0, 1);
 
 $sql = "UPDATE Resort SET " . $set . " WHERE " . $where;
 
@@ -120,7 +120,7 @@ function FormDeleteResort($Name, $City, $State, $StartDate, $EndDate, $URL, $Map
   $where = FormWhereSection($where, "ImageURL", $URL, 0, 1);
   $where = FormWhereSection($where, "ImageMap", $Map, 0, 1);
   $where = FormWhereSection($where, "rating", $Rating, 0, 1);
-  $where = FormWhereSection($where, "difficulty", $Difficulty, 0, 1);
+  $where = FormWhereSection($where, "Difficulty", $Difficulty, 0, 1);
 
   $sql = "DELETE FROM Resort WHERE " . $where;
 
@@ -160,7 +160,7 @@ function PerformQuery($conn, $sql) {
         echo "<td> <input type=\"text\" name=\"URL\" value=\"" . $row["ImageURL"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"Map\" value=\"" . $row["ImageMap"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"rating\" value=\"" . $row["rating"] . "\"></td>";
-        echo "<td> <input type=\"text\" name=\"difficulty\" value=\"" . $row["difficulty"] . "\"></td>";
+        echo "<td> <input type=\"text\" name=\"difficulty\" value=\"" . $row["Difficulty"] . "\"></td>";
         echo "<td> <input type=\"hidden\" name=\"delete\" value=\"true\"> <input type=\"submit\" value=\"Delete\"></td>";
         echo "</tr>";
         echo "</form>";
