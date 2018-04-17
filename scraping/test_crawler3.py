@@ -18,6 +18,7 @@ def test_crawler(seed_url, link_class=None, delay=5, max_depth=-1, max_urls=-1, 
     seen = {seed_url: 0}
     # track how many URL's have been downloaded
     num_urls = 0
+    max_page_links = -1
     rp = get_robots(seed_url)
     throttle = Throttle(delay)
     headers = headers or {}
@@ -52,15 +53,17 @@ def test_crawler(seed_url, link_class=None, delay=5, max_depth=-1, max_urls=-1, 
                     page_links = get_links(soup, link_class)
                     #print "The page links list is "
                     #print page_links
+                    i = 0
                     for link in page_links:
                         #link = normalize(seed_url, link)
                         # check whether already crawled this link
                         if link not in seen:
                             seen[link] = depth + 1
                             # check link is within same domain
-                            if same_domain(seed_url, link):
+                            if same_domain(seed_url, link) and max_page_links > 0 and i < max_page_links:
                                 # success! add this new link to queue
                                 crawl_queue.append(link)
+                                i += 1
                             
             # TODO:  Make this a depth == 1 case where all the subpages are scraped
             elif depth == 1:
@@ -69,8 +72,13 @@ def test_crawler(seed_url, link_class=None, delay=5, max_depth=-1, max_urls=-1, 
                 weatherURL = url + "snow-report/"
                 print "Processing the snow report at: " + weatherURL
                 weatherHTML = download(weatherURL, headers, proxy=proxy, num_retries=num_retries)
+
+                trail_map_url = url + "trail-map/"
+                print "Processing the trail map at: " + weatherURL
+                trail_map_html = download(trail_map_url, headers, proxy=proxy, num_retries=num_retries)
+
                 if scrape_callback:
-                    scrape_callback(url, html, weatherHTML)
+                    scrape_callback(url, html, weatherHTML, trail_map_html)
                 print "Scraping the site: " + url
                 
 
@@ -188,20 +196,36 @@ def findStateWithin(Str):
             return re.search(stateSear, lowerStr).group()
     return None
     
+def get_trail_map_urls(trail_map_html):
+    soup = BeautifulSoup(trail_map_html, 'html.parser')
+    trail_map_div = soup.find(class_=('show-trailmap'))
+
+    if not trail_map_div:
+        trail_map_div = soup.find(class_=('no-trailmap'))
+    
+    big_trailmap_a = trail_map_div.find('a', class_='with-magnifier')
+    big_trailmap_src = big_trailmap_a['href']
+    big_trailmap_url = "http://www.skiresort.info/" + big_trailmap_src
+
+    trailmap_src = big_trailmap_a.find('img')['src']
+    trailmap_url = "http://www.skiresort.info/" + trailmap_src
+
+    return (trailmap_url, big_trailmap_url)
 
 
 # TODO:  Add capability to parse weather info as well
 class ScrapeCallback2:
     def __init__(self):
-        self.writer = csv.writer(open('resort2.info', 'w'))
+        self.writer = csv.writer(open('resort2.info', 'wb', buffering=1))
         # Adding city and state here
-        self.fields = ('resortName', 'ticketPrice', 'beginner', 'inter', 'advanced', 'season', 'rating','image link', 'UpdateDate', 'SnowDepth',  'RunStatus', 'city', 'state')
+        self.fields = ('resortName', 'ticketPrice', 'beginner', 'inter', 'advanced', 'season', 'rating','image link', 'trail image link', 'big trail image link', 'UpdateDate', 'SnowDepth',  'RunStatus', 'city', 'state')
 #        self.fields = ('resortName', 'ticketPrice', 'beginner', 'inter', 'advanced', 'season', 'rating','image link', 'UpdateDate', 'SnowDepth',  'RunStatus')
         self.writer.writerow(self.fields)
         #self.writer = csv.writer(open('resort2.weather', 'w'))
         #self.fields = ('resortName', 'UpdateDate', 'SnowDepth',  'RunStatus')
 
-    def __call__(self, url, html, weatherHTML):
+
+    def __call__(self, url, html, weatherHTML, trail_map_html):
         """ This routine extracts the data from the individual pages to be stored in a table """
         soup = BeautifulSoup(html, 'html.parser')
         resortName = soup.find(class_="fn").string
@@ -279,13 +303,17 @@ class ScrapeCallback2:
             state = 'california'
         print "The state found is " + state
 
+        trail_map_urls = get_trail_map_urls(trail_map_html)
+        trail_map_url = trail_map_urls[0]
+        big_trail_map_url = trail_map_urls[1]
+
         # Write the final results
         results = (resortName, ticketPrice, beginner, intermed, advanced, season, rating,
-                   imageSrc, updateDate, snowDepth, openStatus, city, state)
-        self.writer.writerow(results)       
+                   imageSrc, trail_map_url, big_trail_map_url, updateDate, snowDepth, openStatus, city, state)
+        self.writer.writerow(results)
                
 
 if __name__ == '__main__':
 #    test_crawler('http://www.skiresort.info/ski-resorts/usa/page/2/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
-    test_crawler('http://www.skiresort.info/ski-resorts/usa/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
+    test_crawler('http://www.skiresort.info/ski-resorts/usa/page/', 'pull-right btn btn-default btn-sm', delay=4, num_retries=1, max_depth=1, scrape_callback=ScrapeCallback2())
 
