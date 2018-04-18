@@ -3,6 +3,7 @@ import re
 import random
 import datetime
 import os
+import os.path
 
 # This script will produce three files that will be the csv inputs for the Resort, StayPricing and
 # WeatherForecast tables.
@@ -116,7 +117,7 @@ def massage(file1):
             trip = createFlight(Resort)
             writeFlight(flightCSV, city, Resort, str(computedDate), trip)
                                                                              
-def writeResort(csv, resort, price, difficulty, startSeason, endSeason, image, rating, city, state):
+def writeResort(csv, resort, price, difficulty, startSeason, endSeason, image, imageMap, imageMapXL, rating, city, state):
     length = len(resort)
     i = 0
     while i < length:
@@ -124,9 +125,9 @@ def writeResort(csv, resort, price, difficulty, startSeason, endSeason, image, r
         # Check size of image file and if below a threshold, use imageMap
         imageFileName = 'images/Ski resort ' + resort[i] + '.jpg'
         imageStat = os.stat(imageFileName)
-        if imageStat.st_size > 12000
+        if imageStat.st_size > 12000:
             fields = (resort[i],city[i], state[i], startSeason[i], endSeason[i], image[i], imageMapXL[i], rating[i], difficulty[i])
-        else
+        else:
             fields = (resort[i],city[i], state[i], startSeason[i], endSeason[i], imageMap[i], imageMapXL[i], rating[i], difficulty[i])
         csv.writerow(fields)
         i = i + 1
@@ -345,36 +346,6 @@ def getDateExtent(startDate, endDate, stepAmount):
         dateList.append(currentDate)
     return dateList
 
-#def ComputeDepth(numResorts, computedDate, weatherDate, actSnowDepth, apexDate, headDate, tailDate, minSnow, maxSnow):
-
-#    newSnowDepth = []
-#    index = 0
-#    dayDiff = computedDate - apexDate
-#    #print "The day diff is " + str(abs(dayDiff))
-#    dayDiffFloat = float(re.search(r'[0-9]+',str(dayDiff)).group())
-#    if computedDate > apexDate:
-#        baseDiff = tailDate - apexDate
-#        baseDiffFloat = float(re.search(r'[0-9]+',str(baseDiff)).group())
-#    else:
-#        baseDiff = apexDate - headDate
-#        baseDiffFloat = float(re.search(r'[0-9]+',str(baseDiff)).group()) 
-    #print "The base diff float is " + str(baseDiffFloat)
-#    inputVal = dayDiffFloat / baseDiffFloat
-    #print "The input val is " + str(inputVal)
-#    outputVal = weatherFunc(inputVal)
-    #print "The output val is " + str(outputVal)
-#    while(index < numResorts):
-#        apexSnow = float(actSnowDepth[index]) / outputVal
-#        compDiff = abs(weatherDate[index] - apexDate)
-#        compDiffFloat = float(re.search(r'[0-9]+',str(compDiff)).group())
-#        snowAmount = apexSnow * (1.0 - (compDiffFloat / baseDiffFloat))
-#        if snowAmount > maxSnow:
-#            snowAmount = maxSnow
-#        if snowAmount < minSnow:
-#            snowAmount = minSnow
-#        newSnowDepth.append(snowAmount)
-#        index = index + 1
-#    return newSnowDepth
 
 def ComputeDepth2(numResorts, computedDate, weatherDate, actSnowDepth):
     newSnowDepth = []
@@ -473,4 +444,4 @@ def Entry2Float(str):
     return float(strRes)
 
 if __name__ == '__main__':
-    massage("resort2.info")
+    massage("raw_data/resorts_page2_with_images.info")
