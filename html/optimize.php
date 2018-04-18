@@ -25,7 +25,7 @@ $userPage->run();
 if(!strcmp($_GET["leftfeedback"],"want") || !strcmp($_GET["rightfeedback"],"want"))
     echo "<h1> Here is the info on the Resort you chose </h1>";
 else
-    echo "<h1> This is the optimizer page for VacaFun </h1>";
+    echo "<h1> Welcome to VacaFun</h1> <h2>Your choices below helps provide you with selections you may prefer </h2>";
 
 ?>
 
@@ -150,7 +150,7 @@ else {
     // This is the end
     $conn->close();
 
-    echo DefaultTableResponse($_GET["username"], $twoResorts[0], $twoResorts[1]);
+    echo DefaultTableResponse($twoResorts[0], $twoResorts[1]);
 }
 ?>
 
