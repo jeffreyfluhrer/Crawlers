@@ -1,5 +1,6 @@
 <html>
-
+<link rel="stylesheet" href="optimize.css" type="text/css">
+    
 <?php
 $base = $_SERVER['DOCUMENT_ROOT'];
 require_once $base . '/core/init.php';
