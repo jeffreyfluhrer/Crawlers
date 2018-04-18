@@ -1,0 +1,42 @@
+table {
+    border: 2px solid black;
+    border-collapse: collapse;
+    width: 80%;
+    border-left: 1px solid white;
+    border-right: 1px solid white; 
+    
+}
+
+table td {
+    border-left: 2px solid #000;
+    border-right: 2px solid #000;
+    padding-left: 60px;
+}
+
+table td:first-child {
+    border-left: none;
+    padding-left:  60px;
+}
+
+table td:last-child {
+    border-right: none;
+    padding-left:  60px;
+}
+
+table tr:first-child {
+    margin-top: auto;
+    padding-top: 100px;
+}
+
+table td:last-child: tr:last-child{
+    text-align: left;
+}
+
+h1 {
+    text-align: left;
+}
+
+p {
+    text-align:left;
+    font-weight: bold;
+}
