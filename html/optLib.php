@@ -222,12 +222,25 @@ function DisplayImageAndTitle($leftResortInfo,$rightResortInfo) {
     $leftResortState = $leftResortInfo["State"];
     $rightResortState = $rightResortInfo["State"];
     
+    // Adding various adjectives
+    $adjects = array(0 => "beautiful", 1 => "mysterious", 2 => "exuberant", 3 => "wonderful", 4 => "massive", 5 => "exclusive",
+        6 => "incomparable", 7 => "luxurious");
+    $numEntry = count($adjects);
+    $index = rand(0, $numEntry - 1);
+    $adject1 = $adjects[$index];
+    if($index == ($numEntry - 1))
+        $index = 0;
+    else
+        $index =  $index + 1;
+    $adject2 = $adjects[$index];
+    
+    
     // Place two images in table rows
     // TODO:  Get all the info on the screen
     printf("<td><img src='%s' alt='Left Resort' style=\"width:500px;height:375px;\"></td>",$leftResortImage);
     printf("<td><img src='%s' alt='Right Resort' style=\"width:500px;height:375px;\"></td></tr>",$rightResortImage);
-    printf("<tr><td>The beautiful %s resort in %s, %s</td>",$leftResortName,$leftResortCity,ucwords($leftResortState));
-    printf("<td>The magestic %s resort in %s, %s</td></tr>",$rightResortName,$rightResortCity,ucwords($rightResortState));
+    printf("<tr><td>The %s %s resort in %s, %s</td>",$adject1,$leftResortName,$leftResortCity,ucwords($leftResortState));
+    printf("<td>The %s %s resort in %s, %s</td></tr>",$adject2,$rightResortName,$rightResortCity,ucwords($rightResortState));
 }
 
 function DisplayChosenImage($chosenResortInfo) {
