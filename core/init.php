@@ -4,10 +4,10 @@ session_start();
 
 $GLOBALS['config'] = array(
 	'mysql' => array(
-		'host' => 'wkl2.web.engr.illinois.edu',
-		'username' => 'wkl2_wkl2',
-		'password' => 'x%Va0F[HQ$M.',
-		'db' => 'wkl2_cs411vacafun_test'
+		'host' => 'localhost',
+		'username' => 'cs411vacafun_group',
+		'password' => 'rock2RULE',
+		'db' => 'cs411vacafun_test'
     ),
     
 	'remember' => array(
