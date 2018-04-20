@@ -63,6 +63,88 @@ function CheckForNValidResorts($conn, $n, $userLocation, $tripDate, $tripDuratio
         return 0;
 }
 
+function GetCountOfResortsBelowBudget($conn, $userLocation, $tripDate, $tripDuration, $userBudget) {
+    //
+    // Makes the following assumptions to be accurate:
+    // Flight price is calculated on the date of the trip as a round-trip cost.
+    // Stay price and lift ticket pricing is available for each date within the trip dates.
+    //
+    $totalPriceQuery = @"
+    SELECT
+        Resort.ResortName,
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS TotalPrice
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+    GROUP BY
+        Resort.ResortName,
+        Flight.Price
+    HAVING
+        TotalPrice <= ?";
+    
+    $results = DB::getInstance()->query($totalPriceQuery, array(
+        $tripDate,
+        $userLocation,
+        $tripDate,
+        $tripDate,
+        $tripDuration,
+        $userBudget
+    ));
+
+    return $results->count();
+}
+
+function GetNextHighestPrice($userLocation, $tripDate, $tripDuration, $userBudget) {
+    //
+    // Makes the following assumptions to be accurate:
+    // Flight price is calculated on the date of the trip as a round-trip cost.
+    // Stay price and lift ticket pricing is available for each date within the trip dates.
+    //
+    $totalPriceQuery = @"
+    SELECT
+        Resort.ResortName,
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS TotalPrice
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+    GROUP BY
+        Resort.ResortName,
+        Flight.Price
+    HAVING
+        TotalPrice > ?
+    ORDER BY TotalPrice ASC";
+    
+    $results = DB::getInstance()->query($totalPriceQuery, array(
+        $tripDate,
+        $userLocation,
+        $tripDate,
+        $tripDate,
+        $tripDuration,
+        $userBudget
+    ));
+
+    if ($results->count())
+    {
+        return $results->first()->TotalPrice;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 function GetValidResorts($conn, $n, $userLocation, $tripDate, $tripDuration, $userBudget, $budgetRange) {
 
     $resortPriceProj = "ST.ResortName, StayPrice, LiftTicketPrice, Price";
