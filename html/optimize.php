@@ -29,7 +29,7 @@ else
 
 ?>
 
-<table style="width:80%">
+<table style="width:100%">
   <tr>
 <?php
 
