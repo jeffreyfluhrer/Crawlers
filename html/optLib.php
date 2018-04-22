@@ -133,6 +133,32 @@ function GetAvgRating() {
     return $resultAvg;
 }
 
+function GetAvgResortValues($resortVals) {
+
+    $sumPrice = 0.0;
+    $sumRating = 0.0;
+    $sumDifficulty = 0.0;
+    $totalCount = $resortVals->count();
+    //printf("<br> Here is the total count %d",$totalCount);
+    $i = 0;
+    $prices = $resortVals->getResults("TotalPrice");
+    $ratings = $resortVals->getResults("RateValue");
+    $difficulties = $resortVals->getResults("DifficultyValue");
+    while($i < $totalCount) {
+        $sumPrice = $sumPrice + $prices[$i];
+        $sumRating = $sumRating + $ratings[$i];
+        $sumDifficulty = $sumDifficulty + $difficulties[$i];
+        $i = $i + 1;
+    }
+    $avgPrice = $sumPrice / $totalCount;
+    $avgRating = $sumRating / $totalCount;
+    $avgDifficulty = $sumDifficulty / $totalCount;
+    //printf("<br> Here is the avg price %1.1f, rating %1.1f and difficulty %1.1f",$avgPrice,$avgRating,$avgDifficulty);
+    return array("avgPrice" => $avgPrice, "avgRating" => $avgRating, "avgDifficulty" => $avgDifficulty);    
+}
+
+
+
 function GetAllResortValues($userLocation, $tripDate, $tripDuration) {
     
     $allResortValues = @"
@@ -151,13 +177,124 @@ function GetAllResortValues($userLocation, $tripDate, $tripDuration) {
         AND StayPricing.Date >= ?
         AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
     GROUP BY
-        Resort.ResortName";
+        Resort.ResortName
+    ORDER BY Resort.ResortName ASC";
     $results = DB::getInstance()->query($allResortValues, array($tripDate, 
         $userLocation, 
         $tripDate, 
         $tripDate, 
         $tripDuration));
+    //printf("<br>The total count of resorts is %d",$results->count());
     return $results;
+}
+
+function GetLikeResortValues($userLocation, $tripDate, $tripDuration, $username) {
+    
+    $allResortValues = @"
+    SELECT
+        Resort.ResortName,
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS TotalPrice,
+        Resort.rating AS RateValue,
+        Resort.difficulty AS DifficultyValue
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    JOIN UserHistory ON Resort.ResortName = UserHistory.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+        AND UserHistory.username = ?
+        AND UserHistory.LikeByUser = 1
+    GROUP BY
+        Resort.ResortName
+    ORDER BY Resort.ResortName ASC";
+    $results = DB::getInstance()->query($allResortValues, array($tripDate,
+        $userLocation,
+        $tripDate,
+        $tripDate,
+        $tripDuration,
+        $username));
+    //printf("<br>The total count of liked resorts is %d",$results->count());
+    return $results;
+}
+
+function GetDislikeResortValues($userLocation, $tripDate, $tripDuration, $username) {
+    
+    $allResortValues = @"
+    SELECT
+        Resort.ResortName,
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS TotalPrice,
+        Resort.rating AS RateValue,
+        Resort.difficulty AS DifficultyValue
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    JOIN UserHistory ON Resort.ResortName = UserHistory.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+        AND UserHistory.username = ?
+        AND UserHistory.LikeByUser = 0
+    GROUP BY
+        Resort.ResortName
+    ORDER BY Resort.ResortName ASC";
+    $results = DB::getInstance()->query($allResortValues, array($tripDate,
+        $userLocation,
+        $tripDate,
+        $tripDate,
+        $tripDuration,
+        $username));
+    //printf("<br>The total count of disliked resorts is %d",$results->count());
+    return $results;
+}
+
+// This function computes the average value for each quantity (rating, price and difficulty and tries to
+// estimate the average the user has preferred or not preferred
+function GetComputedHistoryValue($resortAvgs, $likeValues, $disLikeValues,$avgString, $resultString) {
+    
+    $average = $resortAvgs[$avgString];
+    // Sum over likes and take difference of average
+    $i = 0;
+    $likeRatings = $likeValues->getResults($resultString);
+    $sumLikeRatings = 0.0;
+    $totalLikes = $likeValues->count();
+    //printf("<br> like count = %d",$totalLikes);
+    while($i < $totalLikes) {
+        $sumLikeRatings = $sumLikeRatings + $likeRatings[$i] - $average;
+        $i = $i + 1;
+    }
+    //printf("<br> Sum like ratings = %1f",$sumLikeRatings);
+    $i = 0;
+    $disLikeRatings = $disLikeValues->getResults($resultString);
+    //printf("<br> In computed history");
+    $sumdisLikeRatings = 0.0;
+    $totalDisLikes = $disLikeValues->count();
+    //printf("<br> dislike count = %d",$totalDisLikes);
+    while($i < $totalDisLikes) {
+        $sumdisLikeRatings = $sumdisLikeRatings - $disLikeRatings[$i] + $average;
+        $i = $i + 1;
+    }
+    //printf("<br> Sum dislike ratings = %1f",$sumdisLikeRatings);
+    $resultPref = ($sumLikeRatings - $sumdisLikeRatings)/ ($totalLikes + $totalDisLikes);
+    return $average - $resultPref;
+}
+
+function GetScore($values,$numVals,$historyAvg,$userPref,$voteWeight,$prefWeight) {
+    // Compute a list of scores over the inputted variable keeping the resort list in order
+    $i = 0;
+    $output = array();
+    while($i < $numVals) {
+        $result = $prefWeight * abs($userPref - $values[$i]) + $voteWeight * abs($historyAvg - $values[$i]);
+        array_push($output, $result);
+        $i = $i + 1;
+    }
+    return $output;
 }
 
 // This is one of the optimization functions
@@ -180,7 +317,23 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     // Get resort values list for all resorts
     $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
     //printf("<br> The name = %s and price = %1.1f",$resortVals->first()->ResortName, $resortVals->first()->TotalPrice);
-    
+    $resortAvgs = GetAvgResortValues($resortVals);
+    //printf("<br> The avg price = %1.1f",$resortAvgs["avgPrice"]);
+    $likeValues = GetLikeResortValues($userLocation, $tripDate, $tripDuration, $username);
+    $dislikeValues = GetDislikeResortValues($userLocation, $tripDate, $tripDuration, $username);
+    $computedHistoryRating = GetComputedHistoryValue($resortAvgs, $likeValues, $dislikeValues,"avgRating","RateValue");
+    $computedHistoryPrice = GetComputedHistoryValue($resortAvgs, $likeValues, $dislikeValues,"avgPrice","TotalPrice");
+    $computedHistoryDifficulty = GetComputedHistoryValue($resortAvgs, $likeValues, $dislikeValues,"avgDifficulty","DifficultyValue");
+    //printf("<br> The computed history (rating) is %1.1f",$computedHistoryRating);
+    //printf("<br> The computed history (price) is %1.1f",$computedHistoryPrice);
+    //printf("<br> The computed history (difficulty) is %1.1f",$computedHistoryDifficulty);
+    $scoreRating = GetScore($resortVals->getResults("RateValue"),$resortVals->count(),$computedHistoryRating,$ratingPref,
+        $voteWeight,$prefWeight);
+    $scorePrice = GetScore($resortVals->getResults("TotalPrice"),$resortVals->count(),$computedHistoryPrice,$budgetPref,
+        $voteWeight,$prefWeight);
+    $scoreDifficulty = GetScore($resortVals->getResults("DifficultyValue"),$resortVals->count(),$computedHistoryDifficulty,$levelPref,
+        $voteWeight,$prefWeight);
+    //printf("<br> The score of first element is %1.1f",$scoreRating[0]);
     
     return 2;
 }
