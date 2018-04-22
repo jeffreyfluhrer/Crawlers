@@ -40,7 +40,7 @@ function CheckForNValidResorts($conn, $n, $userLocation, $tripDate, $tripDuratio
     // Form query => SELECT ResortName, StayPrice, LiftTicketPrice FROM StayPricing WHERE Date <= tripDate
     // AND DATE_ADD(Date, INTERVAL 7 DAY) > tripDate);
     // This will return a list of 50 resortnames, their stay prices and their liftticketprices.
-    $resortPriceProj = "ST.ResortName, StayPrice, LiftTicketPrice, Price";
+    $resortPriceProj = "ST.ResortName, StayPrice, LiftTicketPrice, Flight.Price";
     $resortPriceTable = "StayPricing AS ST, Flight AS FL";
     $resortPriceWhere = "ST.Date <= '" . $tripDate . "' AND DATE_ADD(ST.Date, INTERVAL 7 DAY) > '" . $tripDate . "'";
     $resortPriceWhere = $resortPriceWhere . " AND FL.Date <= '" . $tripDate . "' AND DATE_ADD(FL.Date, INTERVAL 7 DAY) > '" . $tripDate . "'";
@@ -61,6 +61,28 @@ function CheckForNValidResorts($conn, $n, $userLocation, $tripDate, $tripDuratio
         return 1;
     else
         return 0;
+}
+
+// This routine 
+function TotalUserVotes($username) {
+   
+    $totalUserVotes = @"
+    SELECT
+        COUNT(LikeByUser)
+    FROM
+        UserHistory
+    WHERE
+        UserName = ?";
+    $results = DB::getInstance()->query($totalUserVotes, array(
+        $username));
+    $totalCount = $results->first();
+    //printf("The total votes = %s", $totalCount);
+    return 1;
+}
+
+function GetVotingResorts($username) {
+    
+    return 2;
 }
 
 function GetCountOfResortsBelowBudget($conn, $userLocation, $tripDate, $tripDuration, $userBudget) {
@@ -96,8 +118,10 @@ function GetCountOfResortsBelowBudget($conn, $userLocation, $tripDate, $tripDura
         $tripDuration,
         $userBudget
     ));
-
-    return $results->count();
+    $total_results = $results->count();
+    //printf("<br> The total results = %d", $total_results);
+    
+    return $total_results;
 }
 
 function GetNextHighestPrice($userLocation, $tripDate, $tripDuration, $userBudget) {
@@ -224,7 +248,7 @@ function GetResortInfo($conn,$resort) {
 }
 
 function InsertHistoryRecord($conn, $UserName, $ResortName, $LikedByUser) {
-    $sql = "INSERT INTO UserHistory (username, ResortName, LikedByUser) VALUES ('" . $UserName . "', '" . $ResortName . "', " . $LikedByUser . ")";
+    $sql = "INSERT INTO UserHistory (username, ResortName, LikeByUser) VALUES ('" . $UserName . "', '" . $ResortName . "', " . $LikedByUser . ")";
     //printf("<br>Here is the sql command for insert: %s",$sql);
     if ($conn->query($sql) === TRUE) {
         $returnVal = "New record created successfully.";

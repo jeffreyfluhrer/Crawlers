@@ -127,7 +127,7 @@ else {
     *  and rewarding for likes.  The weights are then used to define the where clause of a query.
     */
     // Tunable parameters for the optimization algorithm
-    $budgetIncreaseRate = 0.1;
+    //$budgetIncreaseRate = 0.1;
 
     // TODO:  Loop over and increment the budgetRange in steps of 20 % until 2 hits are made
     //$checkForResorts = CheckForNValidResorts($conn, $n, $userLocation, $tripDate, $tripDuration, $userBudget, $budgetIncreaseRate);
@@ -135,7 +135,12 @@ else {
     // Get two resorts as a starter (pick least and most expensive of the affordable group)
     //$twoResorts = GetValidResorts($conn, $n, $userLocation, $tripDate, $tripDuration, $userBudget, $budgetRange);
     //printf("<br>The first resort is %s and the second is %s",$twoResorts[0], $twoResorts[1]);
-    $twoResorts = GetRandomResorts($conn, $username);
+    //$checkForUserSelectThres = TotalUserVotes($username);
+//    $checkForUserSelectThres = 1;
+//    if($checkForUserSelectThres < 10)
+        $twoResorts = GetRandomResorts($conn, $username);
+//    else
+//        $twoResorts = GetVotingResorts($username);
 
 
     // 7.  Show the two spots on the screen with three options for each case (Like, Don't Like, I pick this one)
@@ -143,6 +148,10 @@ else {
     $leftResortInfo = GetResortInfo($conn,$twoResorts[0]);
     $rightResortInfo = GetResortInfo($conn,$twoResorts[1]);
 
+    $resultsBelowBudget = GetCountOfResortsBelowBudget($conn, $userLocation, $tripDate, $tripDuration, $userBudget);
+    if($resultsBelowBudget <30)
+        printf("<h6>Warning:  Less than 30 percent of the resorts are below your budget.  Consider revising your preferences. </h6>");
+    
     DisplayImageAndTitle($leftResortInfo,$rightResortInfo);
 
     DisplayRatingandWeather($conn,$leftResortInfo,$rightResortInfo,$tripDate);
