@@ -135,13 +135,14 @@ else {
     // Get two resorts as a starter (pick least and most expensive of the affordable group)
     //$twoResorts = GetValidResorts($conn, $n, $userLocation, $tripDate, $tripDuration, $userBudget, $budgetRange);
     //printf("<br>The first resort is %s and the second is %s",$twoResorts[0], $twoResorts[1]);
-    //$checkForUserSelectThres = TotalUserVotes($username);
-//    $checkForUserSelectThres = 1;
-//    if($checkForUserSelectThres < 10)
+    $checkForUserSelectThres = TotalUserVotes($username);
+    //$checkForUserSelectThres = 1;
+    if($checkForUserSelectThres < 10)
         $twoResorts = GetRandomResorts($conn, $username);
-//    else
-//        $twoResorts = GetVotingResorts($username);
-
+    else
+        $twoResorts = GetRandomResorts($conn, $username);
+        GetVotingResorts($username,$userLocation, $tripDate, $tripDuration);
+        
 
     // 7.  Show the two spots on the screen with three options for each case (Like, Don't Like, I pick this one)
     // Get the resort info

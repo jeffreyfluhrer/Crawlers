@@ -65,22 +65,122 @@ function CheckForNValidResorts($conn, $n, $userLocation, $tripDate, $tripDuratio
 
 // This routine 
 function TotalUserVotes($username) {
-   
+        
     $totalUserVotes = @"
     SELECT
-        COUNT(LikeByUser)
+        COUNT(LikeByUser) AS LikeByUserCount
     FROM
         UserHistory
     WHERE
         UserName = ?";
     $results = DB::getInstance()->query($totalUserVotes, array(
         $username));
-    $totalCount = $results->first();
-    //printf("The total votes = %s", $totalCount);
-    return 1;
+    $resultCount = $results->first()->LikeByUserCount;
+    //printf("<br>The total votes = %d", $resultCount);
+    return $resultCount;
 }
 
-function GetVotingResorts($username) {
+function GetTotalNumResorts() {
+
+    $totalNumResorts = @"
+    SELECT
+        COUNT(Resort.ResortName) AS ResortCount
+    FROM
+        Resort";
+    $results = DB::getInstance()->query($totalNumResorts, array());
+    $resultCount = $results->first()->ResortCount;
+    //printf("<br>The total resorts = %d", $resultCount);
+    return $resultCount;
+}
+
+function GetTotalVotes($username) {
+    $totalNumVotes = @"
+    SELECT
+        COUNT(UserHistory.LikeByUser) AS LikeCount
+    FROM
+        UserHistory    
+    WHERE
+        username = ?";
+    $results = DB::getInstance()->query($totalNumVotes, array($username));
+    $resultCount = $results->first()->LikeCount;
+    //printf("<br>The total votes = %d", $resultCount);
+    return $resultCount;
+}
+
+function GetUserPreferences($username) {
+    $userPreferences = @"
+    SELECT
+        level, budget
+    FROM
+        UserInfo
+    WHERE
+        username = ?";
+    $results = DB::getInstance()->query($userPreferences, array($username));
+    $output = array("level" => $results->first()->level, "budget" => $results->first()->budget);
+    return $output;
+}
+
+function GetAvgRating() {
+    
+    $avgResortRate = @"
+    SELECT
+        AVG(rating) AS AvgRating
+    FROM
+        Resort";
+    $results = DB::getInstance()->query($avgResortRate, array());
+    $resultAvg = $results->first()->AvgRating;
+    //printf("<br>The avg rating = %1.1f", $resultAvg);
+    return $resultAvg;
+}
+
+function GetAllResortValues($userLocation, $tripDate, $tripDuration) {
+    
+    $allResortValues = @"
+    SELECT
+        Resort.ResortName,
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS TotalPrice,
+        Resort.rating AS RateValue,
+        Resort.difficulty AS DifficultyValue
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+    GROUP BY
+        Resort.ResortName";
+    $results = DB::getInstance()->query($allResortValues, array($tripDate, 
+        $userLocation, 
+        $tripDate, 
+        $tripDate, 
+        $tripDuration));
+    return $results;
+}
+
+// This is one of the optimization functions
+function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
+    
+    // Compute weights for computing score
+    $totalNumResorts = GetTotalNumResorts();
+    $totalNumVotedResorts = GetTotalVotes($username);
+    $voteWeight = $totalNumVotedResorts/$totalNumResorts;
+    $prefWeight = 1.0 - $voteWeight;
+    //printf("<br> The vote weight = %1.1f and the pref weight = %1.1f",$voteWeight, $prefWeight);
+
+    // Get user preferences
+    $pref = GetUserPreferences($username);
+    $levelPref = $pref["level"];
+    $budgetPref = $pref["budget"];
+    // Note:  Need to use average since we forgot to include this in the getStarted (Oooops)
+    $ratingPref = GetAvgRating();
+
+    // Get resort values list for all resorts
+    $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
+    //printf("<br> The name = %s and price = %1.1f",$resortVals->first()->ResortName, $resortVals->first()->TotalPrice);
+    
     
     return 2;
 }
