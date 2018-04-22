@@ -297,6 +297,40 @@ function GetScore($values,$numVals,$historyAvg,$userPref,$voteWeight,$prefWeight
     return $output;
 }
 
+function ScoreToRank($score,$count) {
+    
+    $i = 0;
+    $j = 0;
+    $rank = 1;
+    $output = array();
+    while($i < $count) {
+        while($j < count) {
+            if ($i != $j) {
+                if($score[$i] > $score[$j])
+                    $rank = $rank + 1;
+            }
+            $j = $j + 1;
+        }
+        $j = 0;        
+        array_push($output,$rank);
+        $rank = 1;
+        $i = $i + 1;
+    }
+    return $output;
+}
+
+function SumScores($rankRating, $rankPrice, $rankDifficulty, $count) {
+    
+    $i = 0;
+    $output = array();
+    while($i < $count) {
+        $sumOut = $rankRating[$i] + $rankPrice[$i] + $rankDifficulty[$i];
+        array_push($output,$sumOut);
+        $i = $i + 1;
+    }
+    return $output;
+}
+
 // This is one of the optimization functions
 function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     
@@ -334,6 +368,15 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     $scoreDifficulty = GetScore($resortVals->getResults("DifficultyValue"),$resortVals->count(),$computedHistoryDifficulty,$levelPref,
         $voteWeight,$prefWeight);
     //printf("<br> The score of first element is %1.1f",$scoreRating[0]);
+    $rankRating = ScoreToRank($scoreRating,$resortVals->count());
+    $rankPrice = ScoreToRank($scorePrice,$resortVals->count());
+    $rankDifficulty = ScoreToRank($scoreDifficulty,$resortVals->count());
+    //printf("<br> The rank (rating) of first element is %d",$rankRating[1]);
+    //printf("<br> The price (rating) of first element is %d",$rankPrice[1]);
+    //printf("<br> The diff (rating) of first element is %d",$rankDifficulty[1]);
+    $sumScores = SumScores($rankRating, $rankPrice, $rankDifficulty,$resortVals->count());
+    $finalRank = ScoreToRank($sumScores,$resortVals->count());
+    // Get index of first and second winning resorts and return their names
     
     return 2;
 }
