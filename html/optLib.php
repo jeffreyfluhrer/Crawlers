@@ -163,7 +163,7 @@ function GetAllResortValues($userLocation, $tripDate, $tripDuration) {
     
     $allResortValues = @"
     SELECT
-        Resort.ResortName,
+        Resort.ResortName AS ResName,
         Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS TotalPrice,
         Resort.rating AS RateValue,
         Resort.difficulty AS DifficultyValue
@@ -282,6 +282,7 @@ function GetComputedHistoryValue($resortAvgs, $likeValues, $disLikeValues,$avgSt
     }
     //printf("<br> Sum dislike ratings = %1f",$sumdisLikeRatings);
     $resultPref = ($sumLikeRatings - $sumdisLikeRatings)/ ($totalLikes + $totalDisLikes);
+    //printf("<br> Here is the result pref %1f", $resultPref);
     return $average - $resultPref;
 }
 
@@ -331,6 +332,17 @@ function SumScores($rankRating, $rankPrice, $rankDifficulty, $count) {
     return $output;
 }
 
+function FindIndex($listValues, $value, $size) {
+    
+    $i = 0;
+    while($i < $size) {
+        if($listValues[$i] == $value)
+            break;
+        $i = $i + 1;
+    }
+    return $i;
+}
+
 // This is one of the optimization functions
 function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     
@@ -351,16 +363,16 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     // Get resort values list for all resorts
     $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
     //printf("<br> The name = %s and price = %1.1f",$resortVals->first()->ResortName, $resortVals->first()->TotalPrice);
-    $resortAvgs = GetAvgResortValues($resortVals);
+    $resortAvgs = GetAvgResortValues($resortVals); // Works
     //printf("<br> The avg price = %1.1f",$resortAvgs["avgPrice"]);
-    $likeValues = GetLikeResortValues($userLocation, $tripDate, $tripDuration, $username);
-    $dislikeValues = GetDislikeResortValues($userLocation, $tripDate, $tripDuration, $username);
+    $likeValues = GetLikeResortValues($userLocation, $tripDate, $tripDuration, $username); // Gives good count
+    $dislikeValues = GetDislikeResortValues($userLocation, $tripDate, $tripDuration, $username); // Gives good count
     $computedHistoryRating = GetComputedHistoryValue($resortAvgs, $likeValues, $dislikeValues,"avgRating","RateValue");
     $computedHistoryPrice = GetComputedHistoryValue($resortAvgs, $likeValues, $dislikeValues,"avgPrice","TotalPrice");
     $computedHistoryDifficulty = GetComputedHistoryValue($resortAvgs, $likeValues, $dislikeValues,"avgDifficulty","DifficultyValue");
-    //printf("<br> The computed history (rating) is %1.1f",$computedHistoryRating);
-    //printf("<br> The computed history (price) is %1.1f",$computedHistoryPrice);
-    //printf("<br> The computed history (difficulty) is %1.1f",$computedHistoryDifficulty);
+    //printf("<br> The computed history (rating) is %1f",$computedHistoryRating);
+    //printf("<br> The computed history (price) is %1f",$computedHistoryPrice);
+    //printf("<br> The computed history (difficulty) is %1f",$computedHistoryDifficulty);
     $scoreRating = GetScore($resortVals->getResults("RateValue"),$resortVals->count(),$computedHistoryRating,$ratingPref,
         $voteWeight,$prefWeight);
     $scorePrice = GetScore($resortVals->getResults("TotalPrice"),$resortVals->count(),$computedHistoryPrice,$budgetPref,
@@ -377,8 +389,20 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     $sumScores = SumScores($rankRating, $rankPrice, $rankDifficulty,$resortVals->count());
     $finalRank = ScoreToRank($sumScores,$resortVals->count());
     // Get index of first and second winning resorts and return their names
-    
-    return 2;
+    $firstIndex = FindIndex($finalRank,1,$resortVals->count());
+    $secondIndex = FindIndex($finalRank,2,$resortVals->count());
+    //printf("<br>First index = %d and Second index = %d",$firstIndex,$secondIndex);
+    // Get names of resorts
+    $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
+    $names = $resortVals->getResults("ResName");
+    $prices = $resortVals->getResults("TotalPrice");
+    //printf("<br> First price = %1f", prices[0]);
+    //printf("<br>First resort = %s and Second resort = %s",$names[0],$names[1]);
+    $returnResort[0] = $names[$firstIndex];
+    $returnResort[1] = $names[$secondIndex];
+    //printf("<br>First resort = %s and Second resort = %s",$returnResort[0],$returnResort[1]);
+    return $returnResort;
+
 }
 
 function GetCountOfResortsBelowBudget($conn, $userLocation, $tripDate, $tripDuration, $userBudget) {
