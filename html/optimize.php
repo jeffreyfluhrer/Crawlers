@@ -101,6 +101,7 @@ if(!strcmp($_GET["leftfeedback"],"want") || !strcmp($_GET["rightfeedback"],"want
     $chosenResortInfo = GetResortInfo($conn,$chosenResort);
     DisplayChosenImage($chosenResortInfo);
     $outputResortSelections = OutputResortSelections($username);
+    //printf("<br>%s",$outputResortSelections);
     $conn->close();
 }
 else {
@@ -160,6 +161,8 @@ else {
     DisplayImageAndTitle($leftResortInfo,$rightResortInfo);
 
     DisplayRatingandWeather($conn,$leftResortInfo,$rightResortInfo,$tripDate);
+    
+    DisplayPrice($leftResortInfo, $rightResortInfo,$userLocation, $tripDate, $tripDuration);
 
     // This is the end
     $conn->close();

@@ -769,6 +769,70 @@ function DefaultTableResponse($leftResort, $rightResort) {
     return $str;
 }
 
+function GetAverageResortPrice($userLocation, $tripDate, $tripDuration) {
+    $allResortValues = @"
+    SELECT
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS Price
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+    GROUP BY 
+        Resort.ResortName";
+    $results = DB::getInstance()->query($allResortValues, array($tripDate,
+        $userLocation,
+        $tripDate,
+        $tripDate,
+        $tripDuration));
+    //printf("<br>Made it here");
+    $prices = $results->getResults("Price");
+    $total = array_sum($prices);
+    $length = sizeof($prices);
+    //printf("<br> The total = %1f and the length = %d",$total,$length);
+    return $total/$length;
+}
+
+function GetResortPrice($userLocation, $tripDate, $tripDuration, $resortName) {
+    $allResortValues = @"
+    SELECT
+        Flight.Price + SUM(StayPricing.StayPrice + StayPricing.LiftTicketPrice) AS Price
+    FROM
+        Flight
+    JOIN Resort ON Resort.ResortName = Flight.ResortName
+    JOIN StayPricing ON StayPricing.ResortName = Resort.ResortName
+    WHERE
+        Flight.Date = ?
+        AND Flight.StartCity = ?
+        AND StayPricing.Date >= ?
+        AND StayPricing.Date <= DATE_ADD(?, INTERVAL ? DAY)
+        AND Resort.ResortName = ?";
+    $results = DB::getInstance()->query($allResortValues, array($tripDate,
+        $userLocation,
+        $tripDate,
+        $tripDate,
+        $tripDuration,
+        $resortName));
+    $price = $results->first()->Price;
+    //printf("<br>The price is %1f",$price);
+    return $price;
+}
+
+function DisplayPrice($leftResortInfo, $rightResortInfo,$userLocation, $tripDate, $tripDuration) {
+    $leftResortName = $leftResortInfo["ResortName"];
+    $rightResortName = $rightResortInfo["ResortName"];
+    $average_price = GetAverageResortPrice($userLocation, $tripDate, $tripDuration);
+    $leftResortPrice = GetResortPrice($userLocation, $tripDate, $tripDuration, $leftResortName);
+    $rightResortPrice = GetResortPrice($userLocation, $tripDate, $tripDuration, $rightResortName);
+    printf("<tr><td>%s has a price of %1.2f compared to an average of %1.2f</td>",$leftResortName,$leftResortPrice,$average_price);
+    printf("<td>%s has a price of %1.2f compared to an average of %1.2f</td></tr>",$rightResortName,$rightResortPrice,$average_price);
+    //printf("<br>The resort price is %1f",$leftResortPrice);
+}
+
 function StoreResortSelectionToSession($newResort)
 {
     if (Session::exists('ResortSelection'))
