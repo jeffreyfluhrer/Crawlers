@@ -292,7 +292,7 @@ function GetScore($values,$numVals,$historyAvg,$userPref,$voteWeight,$prefWeight
     $output = array();
     while($i < $numVals) {
         $result = $prefWeight * abs($userPref - $values[$i]) + $voteWeight * abs($historyAvg - $values[$i]);
-        array_push($output, $result);
+        $output[$i] = $result;
         $i = $i + 1;
     }
     return $output;
@@ -303,9 +303,10 @@ function ScoreToRank($score,$count) {
     $i = 0;
     $j = 0;
     $rank = 1;
+    //printf("<br> The count of the array is %d",$count);
     $output = array();
     while($i < $count) {
-        while($j < count) {
+        while($j < $count) {
             if ($i != $j) {
                 if($score[$i] > $score[$j])
                     $rank = $rank + 1;
@@ -313,7 +314,7 @@ function ScoreToRank($score,$count) {
             $j = $j + 1;
         }
         $j = 0;        
-        array_push($output,$rank);
+        $output[$i] = $rank;
         $rank = 1;
         $i = $i + 1;
     }
@@ -373,20 +374,28 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     //printf("<br> The computed history (rating) is %1f",$computedHistoryRating);
     //printf("<br> The computed history (price) is %1f",$computedHistoryPrice);
     //printf("<br> The computed history (difficulty) is %1f",$computedHistoryDifficulty);
-    $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
+    //$resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
     $scoreRating = GetScore($resortVals->getResults("RateValue"),$resortVals->count(),$computedHistoryRating,$ratingPref,
         $voteWeight,$prefWeight);
     $scorePrice = GetScore($resortVals->getResults("TotalPrice"),$resortVals->count(),$computedHistoryPrice,$budgetPref,
         $voteWeight,$prefWeight);
     $scoreDifficulty = GetScore($resortVals->getResults("DifficultyValue"),$resortVals->count(),$computedHistoryDifficulty,$levelPref,
         $voteWeight,$prefWeight);
-    //printf("<br> The score of first element is %1f",$scorePrice[0]);
+    $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
+    //printf("<br> The score of first price is %1f",$scorePrice[0]);
+    //printf("<br> The score of 2nd price is %1f",$scorePrice[1]);
+    //printf("<br> The score of 3rd price is %1f",$scorePrice[2]);
+    //printf("<br> The score of 4th price is %1f",$scorePrice[3]);
+    //printf("<br> The score of 5th price is %1f",$scorePrice[4]);
+    //printf("<br> The score of 6th price is %1f",$scorePrice[5]);
     $rankRating = ScoreToRank($scoreRating,$resortVals->count());
     $rankPrice = ScoreToRank($scorePrice,$resortVals->count());
     $rankDifficulty = ScoreToRank($scoreDifficulty,$resortVals->count());
-    //printf("<br> The rank (rating) of first element is %d",$rankRating[1]);
-    //printf("<br> The price (rating) of first element is %d",$rankPrice[1]);
-    //printf("<br> The diff (rating) of first element is %d",$rankDifficulty[1]);
+    //printf("<br> The rank (rating) of first element is %d",$rankRating[0]);
+    //printf("<br> The rank (rating) of 2nd element is %d",$rankRating[1]);
+    //printf("<br> The rank (rating) of 3rd element is %d",$rankRating[2]);
+    //printf("<br> The price (rating) of first element is %d",$rankPrice[0]);
+    //printf("<br> The diff (rating) of first element is %d",$rankDifficulty[0]);
     $sumScores = SumScores($rankRating, $rankPrice, $rankDifficulty,$resortVals->count());
     $finalRank = ScoreToRank($sumScores,$resortVals->count());
     // Get index of first and second winning resorts and return their names
@@ -399,8 +408,8 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     $prices = $resortVals->getResults("TotalPrice");
     //printf("<br> First price = %1f", prices[0]);
     //printf("<br>First resort = %s and Second resort = %s",$names[0],$names[1]);
-    $returnResort[0] = $names[$firstIndex];
-    $returnResort[1] = $names[$secondIndex];
+    $returnResort[0] = $names[$firstIndex - 1];
+    $returnResort[1] = $names[$secondIndex - 1];
     //printf("<br>First resort = %s and Second resort = %s",$returnResort[0],$returnResort[1]);
     return $returnResort;
 

@@ -145,8 +145,11 @@ else {
     if($checkForUserSelectThres < 10)
         $twoResorts = GetRandomResorts($conn, $username);
     else
-        $twoResorts = GetRandomResorts($conn, $username);
-        GetVotingResorts($username,$userLocation, $tripDate, $tripDuration);
+        $int0 = rand(0, 1);
+        if($int0 == 0)
+            $twoResorts = GetVotingResorts($username,$userLocation, $tripDate, $tripDuration);
+        else
+            $twoResorts = GetRandomResorts($conn, $username);
         
 
     // 7.  Show the two spots on the screen with three options for each case (Like, Don't Like, I pick this one)
