@@ -145,6 +145,7 @@ function PerformQuery($conn, $sql) {
       echo "<th scope=\"col\">Trail URL</th>";
       echo "<th scope=\"col\">Rating</th>";
       echo "<th scope=\"col\">Difficulty</th>";
+      echo "<th scope=\"col\">View pricing</th>";
       echo "<th scope=\"col\">Delete?</th>";
       echo "</tr>";
       echo "<thead>";
@@ -161,6 +162,7 @@ function PerformQuery($conn, $sql) {
         echo "<td> <input type=\"text\" name=\"Map\" value=\"" . $row["ImageMap"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"rating\" value=\"" . $row["rating"] . "\"></td>";
         echo "<td> <input type=\"text\" name=\"difficulty\" value=\"" . $row["Difficulty"] . "\"></td>";
+        echo "<td> <a href=\"prices.php?ResortName=" . escape($row["ResortName"]) . "\">" . "Price" . "</a></td>";
         echo "<td> <input type=\"hidden\" name=\"delete\" value=\"true\"> <input type=\"submit\" value=\"Delete\"></td>";
         echo "</tr>";
         echo "</form>";
