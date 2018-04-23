@@ -380,7 +380,7 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
         $voteWeight,$prefWeight);
     $scoreDifficulty = GetScore($resortVals->getResults("DifficultyValue"),$resortVals->count(),$computedHistoryDifficulty,$levelPref,
         $voteWeight,$prefWeight);
-    printf("<br> The score of first element is %1f",$scorePrice[0]);
+    //printf("<br> The score of first element is %1f",$scorePrice[0]);
     $rankRating = ScoreToRank($scoreRating,$resortVals->count());
     $rankPrice = ScoreToRank($scorePrice,$resortVals->count());
     $rankDifficulty = ScoreToRank($scoreDifficulty,$resortVals->count());
