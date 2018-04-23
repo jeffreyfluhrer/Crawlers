@@ -769,4 +769,57 @@ function DefaultTableResponse($leftResort, $rightResort) {
     return $str;
 }
 
+function StoreResortSelectionToSession($newResort)
+{
+    if (Session::exists('ResortSelection'))
+    {
+        $selection = Session::get('ResortSelection');
+    }
+    else
+    {
+        $selection = array();
+    }
+
+    $selection[] = $newResort;
+
+    Session::put('ResortSelection', $selection);
+}
+
+function DeleteResortSelectionFromSession()
+{
+    Session::delete('ResortSelection');
+}
+
+function OutputResortSelections($username)
+{
+    $selections = Session::exists('ResortSelection') ? Session::get('ResortSelection') : array();
+    $db = DB::getInstance()->query('SELECT * FROM UserHistory WHERE UserHistory.username = ? AND UserHistory.resortName IN ("' . implode('","', $selections) . '")', array($username));
+    $resortSelections = $db->results();
+    $display = '<div class="feedback-explanation">';
+
+    if ($db->count())
+    {
+        $display .= '<p><h4>We recommended you resorts based on your previous selections:</h4></p>';
+    }
+
+    // Order output based on the selection history
+    $resortDict = array();
+    foreach ($resortSelections as $resortSelection)
+    {
+        $resortDict[$resortSelection->ResortName] = $resortSelection;
+    }
+
+    foreach ($selections as $orderedSelection)
+    {
+        $resortSelection = $resortDict[$orderedSelection];
+        $action = $resortSelection->LikeByUser == 0 ? '<span class="text-danger">disliked</span>' : '<span class="text-success">liked</span>';
+        $display .= '<p>You ' . $action . ' '. $resortSelection->ResortName . '.</p>';
+    }
+
+
+    $display .= '</div>';
+
+    return $display;
+}
+
 ?>

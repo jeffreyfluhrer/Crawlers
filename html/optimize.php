@@ -19,7 +19,7 @@ $userPage->run();
   <!--Navigation Bar-->
   <?php 
   NavBar::render(); ?>
-
+<div class="pl-3">
 <?php
 //printf("<br> Made it here");
 if(!strcmp($_GET["leftfeedback"],"want") || !strcmp($_GET["rightfeedback"],"want"))
@@ -58,6 +58,7 @@ $username = $user->data()->username;
 // Step 2:  Get the current user id
 // TODO:  Don't have a calling PHP code so will have to hardcode this for now (Later implement the receipt of the vars)
 if(!strcmp($_GET["initialDefine"],"1")) {
+    DeleteResortSelectionFromSession();
     //printf("<br>The user name is %s",$username);
     $tripDate = $_GET["date"];
     $tripDuration = $_GET["duration"];
@@ -99,16 +100,19 @@ if(!strcmp($_GET["leftfeedback"],"want") || !strcmp($_GET["rightfeedback"],"want
     //printf("<br> The chosen resort is %s",$chosenResort);
     $chosenResortInfo = GetResortInfo($conn,$chosenResort);
     DisplayChosenImage($chosenResortInfo);
+    $outputResortSelections = OutputResortSelections($username);
     $conn->close();
 }
 else {
     // 4.  If values from a selection on the previous page were set, update the userhistory table
     // TODO:  Make sure that both resortName and username are keys otherwise the below won't work
     if(strlen($_GET["leftfeedback"]) != 0) {
+        StoreResortSelectionToSession($_GET["_leftresort"]);
         HistoryManage($conn, $username, $_GET["leftfeedback"], $_GET["_leftresort"]);
     }
 
     if(strlen($_GET["rightfeedback"]) != 0) {
+        StoreResortSelectionToSession($_GET["_rightresort"]);
         HistoryManage($conn, $username, $_GET["rightfeedback"], $_GET["_rightresort"]);
     }
 
@@ -163,6 +167,8 @@ else {
     echo DefaultTableResponse($twoResorts[0], $twoResorts[1]);
 }
 ?>
-
+</table>
+<?php if (isset($outputResortSelections)) { echo $outputResortSelections; } ?>
+</div>
 </body>
 </html>
