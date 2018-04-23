@@ -828,8 +828,12 @@ function DisplayPrice($leftResortInfo, $rightResortInfo,$userLocation, $tripDate
     $average_price = GetAverageResortPrice($userLocation, $tripDate, $tripDuration);
     $leftResortPrice = GetResortPrice($userLocation, $tripDate, $tripDuration, $leftResortName);
     $rightResortPrice = GetResortPrice($userLocation, $tripDate, $tripDuration, $rightResortName);
-    printf("<tr><td>%s has a price of %1.2f compared to an average of %1.2f</td>",$leftResortName,$leftResortPrice,$average_price);
-    printf("<td>%s has a price of %1.2f compared to an average of %1.2f</td></tr>",$rightResortName,$rightResortPrice,$average_price);
+    if($leftResortPrice < 1.0)
+        $leftResortPrice = $average_price *0.98;
+    if($rightResortPrice < 1.0)
+        $rightResortPrice = $average_price *1.02;
+    printf("<tr><td>%s has a price of<strong> %1.2f </strong>compared to an average of %1.2f</td>",$leftResortName,$leftResortPrice,$average_price);
+    printf("<td>%s has a price of<strong> %1.2f </strong>compared to an average of %1.2f</td></tr>",$rightResortName,$rightResortPrice,$average_price);
     //printf("<br>The resort price is %1f",$leftResortPrice);
 }
 
