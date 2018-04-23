@@ -373,13 +373,14 @@ function GetVotingResorts($username,$userLocation, $tripDate, $tripDuration) {
     //printf("<br> The computed history (rating) is %1f",$computedHistoryRating);
     //printf("<br> The computed history (price) is %1f",$computedHistoryPrice);
     //printf("<br> The computed history (difficulty) is %1f",$computedHistoryDifficulty);
+    $resortVals = GetAllResortValues($userLocation, $tripDate, $tripDuration);
     $scoreRating = GetScore($resortVals->getResults("RateValue"),$resortVals->count(),$computedHistoryRating,$ratingPref,
         $voteWeight,$prefWeight);
     $scorePrice = GetScore($resortVals->getResults("TotalPrice"),$resortVals->count(),$computedHistoryPrice,$budgetPref,
         $voteWeight,$prefWeight);
     $scoreDifficulty = GetScore($resortVals->getResults("DifficultyValue"),$resortVals->count(),$computedHistoryDifficulty,$levelPref,
         $voteWeight,$prefWeight);
-    //printf("<br> The score of first element is %1.1f",$scoreRating[0]);
+    printf("<br> The score of first element is %1f",$scorePrice[0]);
     $rankRating = ScoreToRank($scoreRating,$resortVals->count());
     $rankPrice = ScoreToRank($scorePrice,$resortVals->count());
     $rankDifficulty = ScoreToRank($scoreDifficulty,$resortVals->count());
@@ -493,7 +494,7 @@ function GetValidResorts($conn, $n, $userLocation, $tripDate, $tripDuration, $us
 
     $resortPriceProj = "ST.ResortName, StayPrice, LiftTicketPrice, Price";
     $resortPriceTable = "StayPricing AS ST, Flight AS FL";
-    $resortPriceWhere = "ST.Date <= '" . $tripDate . "' AND DATE_ADD(ST.Date, INTERVAL 7 DAY) > '" . $tripDate . "'";
+    $resortPriceWhere = "ST.Date <= '" . $tripDate . "' AND DATE_ADD(ST.Date, INTERVAL 1 DAY) > '" . $tripDate . "'";
     $resortPriceWhere = $resortPriceWhere . " AND FL.Date <= '" . $tripDate . "' AND DATE_ADD(FL.Date, INTERVAL 7 DAY) > '" . $tripDate . "'";
     $resortPriceWhere = $resortPriceWhere . " AND ST.ResortName = FL.ResortName AND StartCity = '" . $userLocation . "'";
 
